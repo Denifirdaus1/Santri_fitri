@@ -809,7 +809,7 @@ function showLogoutPopup() {
             showToast('info', 'Logout...')
             await authLogout()
             setTimeout(() => {
-                window.location.href = '../index.html?logout=success'
+                window.location.href = '/?logout=success'
             }, 1000)
         }
     })
@@ -1042,7 +1042,7 @@ async function prosesKembali(id) {
 
 // ==================== INIT ====================
 ;(async () => {
-    currentUser = await requireAuth('santri', '../index.html')
+    currentUser = await requireAuth('santri', '/')
     if (!currentUser) return
     
     myIdSantri = getSantriId(currentUser)

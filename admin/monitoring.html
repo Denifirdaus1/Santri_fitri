@@ -856,27 +856,27 @@
     </div>
     
     <div class="menu">
-        <a href="index.html">
+        <a href="/admin">
             <i class="fa-solid fa-house"></i> Beranda
         </a>
 
         <div class="menu-separator"></div>
 
-        <a href="kelola-santri.html">
+        <a href="/admin/kelola-santri">
             <i class="fa-solid fa-users"></i> Kelola Data Santri
         </a>
 
-        <a href="rekap.html">
+        <a href="/admin/rekap">
             <i class="fa-solid fa-file-lines"></i> Rekap Perizinan
         </a>
 
         <div class="menu-separator"></div>
 
-        <a href="konfirmasi.html">
+        <a href="/admin/konfirmasi">
             <i class="fa-solid fa-check"></i> Konfirmasi Perizinan
         </a>
 
-        <a href="monitoring.html" class="active">
+        <a href="/admin/monitoring" class="active">
             <i class="fa-solid fa-eye"></i> Monitoring
         </a>
         
@@ -895,7 +895,7 @@
         <div class="header-left">
             <h3><i class="fa-solid fa-eye"></i> Monitoring Santri</h3>
             <div class="breadcrumb">
-                <a href="index.html">Beranda</a> > Monitoring
+                <a href="/admin">Beranda</a> > Monitoring
             </div>
         </div>
         
@@ -1089,7 +1089,7 @@ window.exportPDF = exportPDF
 
 function showLogoutPopup() {
     showPopup({ type: 'confirm', title: 'Yakin mau logout? ðŸ¥º', message: 'Kamu akan kembali ke halaman login', confirmText: 'Logout',
-        onConfirmFn: async () => { closePopup(); showToast('info', 'Logout...'); await authLogout(); setTimeout(() => { window.location.href = '../index.html?logout=success' }, 1000) }
+        onConfirmFn: async () => { closePopup(); showToast('info', 'Logout...'); await authLogout(); setTimeout(() => { window.location.href = '/?logout=success' }, 1000) }
     })
 }
 
@@ -1172,7 +1172,7 @@ async function exportExcel() { showToast('info', 'Menyiapkan export...'); try { 
 function exportPDF() { showToast('info', 'Export PDF...') }
 
 ;(async () => {
-    const user = await requireAuth('admin', '../index.html')
+    const user = await requireAuth('admin', '/')
     if (!user) return; setUserInfo(user); loadMonitoring()
 })()
 </script>

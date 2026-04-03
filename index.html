@@ -266,9 +266,9 @@
     if (session) {
         const role = getUserRole(session.user)
         if (role === 'admin') {
-            window.location.href = 'admin/index.html'
+            window.location.href = '/admin'
         } else if (role === 'santri') {
-            window.location.href = 'santri/index.html'
+            window.location.href = '/santri'
         }
     }
 
@@ -304,9 +304,9 @@
             setTimeout(() => {
                 const role = getUserRole(data.user)
                 if (role === 'admin') {
-                    window.location.href = 'admin/index.html';
+                    window.location.href = '/admin';
                 } else {
-                    window.location.href = 'santri/index.html';
+                    window.location.href = '/santri';
                 }
             }, 1000);
         } catch (error) {

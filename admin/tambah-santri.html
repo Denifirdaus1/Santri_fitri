@@ -677,7 +677,7 @@ window.showLogoutPopup = showLogoutPopup
 
 function showLogoutPopup() {
     showPopup({ type: 'confirm', title: 'Yakin mau logout? ðŸ¥º', message: 'Kamu akan kembali ke halaman login', confirmText: 'Logout',
-        onConfirmFn: async () => { closePopup(); showToast('info', 'Logout...'); await authLogout(); setTimeout(() => { window.location.href = '../index.html?logout=success' }, 1000) }
+        onConfirmFn: async () => { closePopup(); showToast('info', 'Logout...'); await authLogout(); setTimeout(() => { window.location.href = '/?logout=success' }, 1000) }
     })
 }
 
@@ -707,7 +707,7 @@ document.getElementById('tambahForm')?.addEventListener('submit', async (e) => {
 })
 
 ;(async () => {
-    const user = await requireAuth('admin', '../index.html')
+    const user = await requireAuth('admin', '/')
     if (!user) return
     setUserInfo(user)
 })()

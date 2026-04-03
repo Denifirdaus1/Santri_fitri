@@ -455,7 +455,7 @@
                                 <i class="fa-solid fa-save"></i>
                                 Update Data
                             </button>
-                            <a href="kelola-santri.html" class="btn btn-secondary">
+                            <a href="/admin/kelola-santri" class="btn btn-secondary">
                                 <i class="fa-solid fa-arrow-left"></i>
                                 Kembali
                             </a>
@@ -466,7 +466,7 @@
         </div>
         
         <div class="back-link">
-            <a href="kelola-santri.html">
+            <a href="/admin/kelola-santri">
                 <i class="fa-solid fa-chevron-left"></i>
                 Kembali ke Daftar Santri
             </a>
@@ -485,7 +485,7 @@ window.showLogoutPopup = showLogoutPopup
 
 function showLogoutPopup() {
     showPopup({ type: 'confirm', title: 'Yakin mau logout? ðŸ¥º', message: 'Kamu akan kembali ke halaman login', confirmText: 'Logout',
-        onConfirmFn: async () => { closePopup(); showToast('info', 'Logout...'); await authLogout(); setTimeout(() => { window.location.href = '../index.html?logout=success' }, 1000) }
+        onConfirmFn: async () => { closePopup(); showToast('info', 'Logout...'); await authLogout(); setTimeout(() => { window.location.href = '/?logout=success' }, 1000) }
     })
 }
 
@@ -526,7 +526,7 @@ document.getElementById('editForm')?.addEventListener('submit', async (e) => {
         const { error } = await supabase.from('santri').update({ nis, nama_santri: nama, jenis_kelamin: jk, kelas }).eq('id_santri', santriId)
         if (error) throw error
         showPopup({ type: 'success', title: 'Berhasil! ðŸŽ‰', message: 'Data santri berhasil diupdate!' })
-        setTimeout(() => { window.location.href = 'kelola-santri.html' }, 1500)
+        setTimeout(() => { window.location.href = '/admin/kelola-santri' }, 1500)
     } catch (error) {
         console.error('Error:', error)
         showToast('error', error.message || 'Gagal update data')
@@ -535,7 +535,7 @@ document.getElementById('editForm')?.addEventListener('submit', async (e) => {
 })
 
 ;(async () => {
-    const user = await requireAuth('admin', '../index.html')
+    const user = await requireAuth('admin', '/')
     if (!user) return
     setUserInfo(user)
     loadSantri()

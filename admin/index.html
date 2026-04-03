@@ -651,25 +651,25 @@
         </div>
 
         <div class="menu">
-            <a href="index.html" class="active">
+            <a href="/admin" class="active">
                 <i class="fa-solid fa-house"></i> Beranda
             </a>
             
             <div class="menu-separator"></div>
             
-            <a href="kelola-santri.html">
+            <a href="/admin/kelola-santri">
                 <i class="fa-solid fa-users"></i> Kelola Data Santri
             </a>
-            <a href="rekap.html">
+            <a href="/admin/rekap">
                 <i class="fa-solid fa-file-lines"></i> Rekap Perizinan
             </a>
             
             <div class="menu-separator"></div>
             
-            <a href="konfirmasi.html">
+            <a href="/admin/konfirmasi">
                 <i class="fa-solid fa-check"></i> Konfirmasi Perizinan
             </a>
-            <a href="monitoring.html">
+            <a href="/admin/monitoring">
                 <i class="fa-solid fa-eye"></i> Monitoring
             </a>
             
@@ -717,7 +717,7 @@
             <!-- KONFIRMASI IZIN -->
             <div class="section-title">
                 <i class="fa-solid fa-check"></i> Konfirmasi Perizinan
-                <a href="konfirmasi.html" style="color: #1b5e20; font-size: 13px; text-decoration: none;">
+                <a href="/admin/konfirmasi" style="color: #1b5e20; font-size: 13px; text-decoration: none;">
                     Lihat Semua <i class="fa-solid fa-arrow-right"></i>
                 </a>
             </div>
@@ -861,7 +861,7 @@ function showLogoutPopup() {
             showToast('info', 'Logout...')
             await authLogout()
             setTimeout(() => {
-                window.location.href = '../index.html?logout=success'
+                window.location.href = '/?logout=success'
             }, 1000)
         }
     })
@@ -973,7 +973,7 @@ async function loadIzinPending() {
             if (data.length > 3) {
                 html += `
                     <div style="text-align:center; margin-top:20px;">
-                        <a href="konfirmasi.html" style="color:#1b5e20; text-decoration:none; font-weight:600;">
+                        <a href="/admin/konfirmasi" style="color:#1b5e20; text-decoration:none; font-weight:600;">
                             Lihat Semua (${data.length}) <i class="fa-solid fa-arrow-right"></i>
                         </a>
                     </div>
@@ -1349,7 +1349,7 @@ function clientPrintPDF() {
 
 // ==================== INIT ====================
 ;(async () => {
-    currentUser = await requireAuth('admin', '../index.html')
+    currentUser = await requireAuth('admin', '/')
     if (!currentUser) return
     
     setUserInfo(currentUser)

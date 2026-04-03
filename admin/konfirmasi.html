@@ -785,25 +785,25 @@
     </div>
     
     <div class="menu">
-        <a href="index.html">
+        <a href="/admin">
             <i class="fa-solid fa-house"></i> Beranda
         </a>
         
         <div class="menu-separator"></div>
         
-        <a href="kelola-santri.html">
+        <a href="/admin/kelola-santri">
             <i class="fa-solid fa-users"></i> Kelola Data Santri
         </a>
-        <a href="rekap.html">
+        <a href="/admin/rekap">
             <i class="fa-solid fa-file-lines"></i> Rekap Perizinan
         </a>
         
         <div class="menu-separator"></div>
         
-        <a href="konfirmasi.html" class="active">
+        <a href="/admin/konfirmasi" class="active">
             <i class="fa-solid fa-check"></i> Konfirmasi Perizinan
         </a>
-        <a href="monitoring.html">
+        <a href="/admin/monitoring">
             <i class="fa-solid fa-eye"></i> Monitoring
         </a>
         
@@ -822,7 +822,7 @@
         <div class="header-left">
             <h3><i class="fa-solid fa-gauge"></i> Konfirmasi Perizinan</h3>
             <div class="breadcrumb">
-                <a href="index.html">Beranda</a> > Konfirmasi Perizinan
+                <a href="/admin">Beranda</a> > Konfirmasi Perizinan
             </div>
         </div>
         
@@ -970,7 +970,7 @@ function showLogoutPopup() {
             closePopup()
             showToast('info', 'Logout...')
             await authLogout()
-            setTimeout(() => { window.location.href = '../index.html?logout=success' }, 1000)
+            setTimeout(() => { window.location.href = '/?logout=success' }, 1000)
         }
     })
 }
@@ -1111,7 +1111,7 @@ function showComingSoon(fitur) {
 }
 
 ;(async () => {
-    currentUser = await requireAuth('admin', '../index.html')
+    currentUser = await requireAuth('admin', '/')
     if (!currentUser) return
     setUserInfo(currentUser)
     loadData()

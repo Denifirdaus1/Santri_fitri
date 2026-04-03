@@ -617,25 +617,25 @@
     </div>
 
     <div class="menu">
-        <a href="index.html">
+        <a href="/admin">
             <i class="fa-solid fa-house"></i> Beranda
         </a>
         
         <div class="menu-separator"></div>
         
-        <a href="kelola-santri.html" class="active">
+        <a href="/admin/kelola-santri" class="active">
             <i class="fa-solid fa-users"></i> Kelola Data Santri
         </a>
-        <a href="rekap.html">
+        <a href="/admin/rekap">
             <i class="fa-solid fa-file-lines"></i> Rekap Perizinan
         </a>
         
         <div class="menu-separator"></div>
         
-        <a href="konfirmasi.html">
+        <a href="/admin/konfirmasi">
             <i class="fa-solid fa-check"></i> Konfirmasi Perizinan
         </a>
-        <a href="monitoring.html">
+        <a href="/admin/monitoring">
             <i class="fa-solid fa-eye"></i> Monitoring
         </a>
         
@@ -693,7 +693,7 @@
                     <option value="P">Perempuan</option>
                 </select>
                 
-               <a href="tambah-santri.html" class="btn-tambah">
+               <a href="/admin/tambah-santri" class="btn-tambah">
     <i class="fa-solid fa-plus"></i>
     Tambah Santri
 </a>
@@ -791,7 +791,7 @@ window.exportPDF = exportPDF
 
 function showLogoutPopup() {
     showPopup({ type: 'confirm', title: 'Yakin mau logout? ðŸ¥º', message: 'Kamu akan kembali ke halaman login', confirmText: 'Logout',
-        onConfirmFn: async () => { closePopup(); showToast('info', 'Logout...'); await authLogout(); setTimeout(() => { window.location.href = '../index.html?logout=success' }, 1000) }
+        onConfirmFn: async () => { closePopup(); showToast('info', 'Logout...'); await authLogout(); setTimeout(() => { window.location.href = '/?logout=success' }, 1000) }
     })
 }
 
@@ -886,7 +886,7 @@ function exportPDF() {
 }
 
 ;(async () => {
-    const user = await requireAuth('admin', '../index.html')
+    const user = await requireAuth('admin', '/')
     if (!user) return
     setUserInfo(user)
     loadSantri()
