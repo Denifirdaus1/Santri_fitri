@@ -920,8 +920,7 @@ function showLogoutPopup() {
 
 
 // ==================== LOAD RIWAYAT ====================
-async function loadRiwayat()
-    loadActiveStatus() {
+async function loadRiwayat() {
     try {
         const { data, error } = await supabase
             .from('izin')
@@ -1067,6 +1066,7 @@ document.getElementById('izinForm').addEventListener('submit', async (e) => {
         document.getElementById('izinForm').reset();
         setMinDate();
         loadRiwayat();
+        loadActiveStatus();
     } catch (error) {
         console.error('Error:', error);
         showToast('error', error.message || 'Gagal mengirim data');
@@ -1124,6 +1124,7 @@ async function prosesKembali(id) {
             message: 'Konfirmasi kembali berhasil!'
         })
         loadRiwayat()
+        loadActiveStatus()
     } catch (error) {
         console.error('Error:', error)
         showToast('error', error.message || 'Gagal konfirmasi')
@@ -1139,6 +1140,7 @@ async function prosesKembali(id) {
     document.getElementById('userName').innerText = getUserName(currentUser)
     setMinDate()
     loadRiwayat()
+    loadActiveStatus()
 })()
 
 // Expose functions required by inline HTML events
