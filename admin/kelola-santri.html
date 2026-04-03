@@ -854,7 +854,7 @@ function previousPage() { if (currentPage > 1) { currentPage--; renderTable() } 
 function nextPage() { if (currentPage < Math.ceil(semuaSantri.length/rowsPerPage)) { currentPage++; renderTable() } }
 function goToPage(p) { if (p > 0) { currentPage = p; renderTable() } }
 
-function editSantri(id) { window.location.href = `edit-santri.html?id=${id}` }
+function editSantri(id) { window.location.href = `/admin/edit-santri?id=${id}` }
 
 function confirmHapus(id, nama) {
     showPopup({ type: 'confirm', title: 'Hapus Santri? ðŸ˜¢', message: `Yakin ingin menghapus <strong>${nama}</strong>?`, confirmText: 'Hapus',
@@ -873,16 +873,93 @@ async function hapusSantri(id) {
     }
 }
 
-async function exportExcel() { showToast('info', 'Menyiapkan export...'); try { const { data, error } = await supabase.functions.invoke('export-data', { body: { table: 'santri', format: 'csv' } }); if (error) throw error; const blob = new Blob([data], { type: 'text/csv;charset=utf-8;' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'Data_Santri.csv'; a.click(); showToast('success', 'Excel berhasil didownload 📊'); } catch (e) { console.error(e); showToast('error', 'Gagal export data: ' + e.message); } }
+async function exportExcel() {
+    if (semuaSantri.length === 0) { showToast('error', 'Tidak ada data untuk diekspor'); return }
+    showToast('info', 'Menyiapkan export Excel...');
+    try {
+        const ws_data = [['NO', 'NIS', 'Nama Santri', 'Kelas', 'Jenis Kelamin']];
+        const searchValue = document.getElementById('searchInput').value.toLowerCase();
+        const classFilter = document.getElementById('classFilter').value;
+        const genderFilter = document.getElementById('genderFilter').value;
+        const exportData = semuaSantri.filter(s => {
+            const matchSearch = s.nama_santri.toLowerCase().includes(searchValue) || s.nis.toLowerCase().includes(searchValue);
+            return matchSearch && (!classFilter || s.kelas === classFilter) && (!genderFilter || s.jenis_kelamin === genderFilter);
+        });
+
+        exportData.forEach((s, i) => {
+            ws_data.push([
+                i + 1,
+                s.nis,
+                s.nama_santri,
+                s.kelas,
+                s.jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan'
+            ]);
+        });
+        
+        const ws = XLSX.utils.aoa_to_sheet(ws_data);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Data Santri");
+        XLSX.writeFile(wb, "Data_Santri.xlsx");
+        showToast('success', 'Excel berhasil diekspor 📊');
+    } catch (error) {
+        console.error('Export Excel Error:', error);
+        showToast('error', 'Gagal mengekspor data');
+    }
+}
 
 function exportPDF() {
-    if (semuaSantri.length === 0) { showToast('error', 'Tidak ada data'); return }
-    const w = window.open('', '_blank')
-    let rows = ''; semuaSantri.forEach((s,i) => { rows += `<tr><td>${i+1}</td><td>${s.nis}</td><td>${s.nama_santri}</td><td>${s.kelas}</td><td>${s.jenis_kelamin==='L'?'L':'P'}</td></tr>` })
-    w.document.write(`<html><head><title>Data Santri</title><style>body{font-family:Arial;padding:20px}h1{color:#1b5e20}table{width:100%;border-collapse:collapse}th{background:#1b5e20;color:white;padding:8px}td{padding:6px;border-bottom:1px solid #ddd}</style></head>
-    <body><h1>Data Santri - Pesantren Tanwirul Qulub</h1><table><thead><tr><th>No</th><th>NIS</th><th>Nama</th><th>Kelas</th><th>JK</th></tr></thead><tbody>${rows}</tbody></table></body></html>`)
-    w.document.close(); w.onload = () => w.print()
-    showToast('success', 'PDF siap dicetak ðŸ“„')
+    if (semuaSantri.length === 0) { showToast('error', 'Tidak ada data untuk diekspor'); return }
+    showToast('info', 'Menyiapkan PDF...');
+    
+    try {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        doc.setFontSize(18);
+        doc.setTextColor(27, 94, 32);
+        doc.text("Data Santri - Pesantren Tanwirul Qulub", 14, 22);
+        
+        doc.setFontSize(11);
+        doc.setTextColor(100);
+        doc.text("Dicetak pada: " + new Date().toLocaleDateString('id-ID'), 14, 30);
+        
+        const tableColumn = ["No", "NIS", "Nama Santri", "Kelas", "Jenis Kelamin"];
+        const tableRows = [];
+        
+        const searchValue = document.getElementById('searchInput').value.toLowerCase();
+        const classFilter = document.getElementById('classFilter').value;
+        const genderFilter = document.getElementById('genderFilter').value;
+        const exportData = semuaSantri.filter(s => {
+            const matchSearch = s.nama_santri.toLowerCase().includes(searchValue) || s.nis.toLowerCase().includes(searchValue);
+            return matchSearch && (!classFilter || s.kelas === classFilter) && (!genderFilter || s.jenis_kelamin === genderFilter);
+        });
+
+        exportData.forEach((s, i) => {
+            tableRows.push([
+                i + 1,
+                s.nis,
+                s.nama_santri,
+                s.kelas,
+                s.jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan'
+            ]);
+        });
+        
+        doc.autoTable({
+            head: [tableColumn],
+            body: tableRows,
+            startY: 35,
+            theme: 'grid',
+            headStyles: { fillColor: [27, 94, 32], textColor: 255 },
+            alternateRowStyles: { fillColor: [241, 248, 233] },
+            margin: { top: 35 }
+        });
+        
+        doc.save("Data_Santri_Tanwirul_Qulub.pdf");
+        showToast('success', 'PDF siap dan berhasil diunduh 📄');
+    } catch (e) {
+        console.error('Export PDF Error:', e);
+        showToast('error', 'Gagal membuat file PDF');
+    }
 }
 
 ;(async () => {
