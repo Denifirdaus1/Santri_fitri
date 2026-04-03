@@ -1100,14 +1100,45 @@ async function loadMonitoring() {
     try {
         const { data, error } = await supabase.from('izin').select('*, santri(nama_santri, kelas)').eq('status', 'disetujui').order('tanggal_keluar', { ascending: false })
         if (error) throw error
+        
+        let stats = { aktif: 0, belum: 0, terlambat: 0, tepat: 0 }
+        
         monitoringData = (data || []).map(item => {
             let status = 'Belum Kembali'
-            if (item.tanggal_kembali) { status = item.status_kembali === 'tepat_waktu' ? 'Tepat Waktu' : 'Terlambat' }
-            else if (item.batas_waktu && new Date().getTime() > new Date(item.batas_waktu).getTime()) { status = 'Terlambat' }
+            if (item.tanggal_kembali) { 
+                status = item.status_kembali === 'tepat_waktu' ? 'Tepat Waktu' : 'Terlambat' 
+            } else if (item.batas_waktu && new Date().getTime() > new Date(item.batas_waktu).getTime()) { 
+                status = 'Terlambat' 
+            }
+            
+            // Count stats
+            if (!item.tanggal_kembali) stats.aktif++
+            if (status === 'Belum Kembali') stats.belum++
+            if (status === 'Terlambat') stats.terlambat++
+            if (status === 'Tepat Waktu') stats.tepat++
+            
             return { ...item, nama_santri: item.santri?.nama_santri || '-', kelas: item.santri?.kelas || '-', status,
                 tanggal_keluar: item.tanggal_keluar ? new Date(item.tanggal_keluar).toLocaleDateString('id-ID') : '-',
                 batas_waktu: item.batas_waktu ? new Date(item.batas_waktu).toLocaleDateString('id-ID') : '-' }
         })
+        
+        // Update DOM Stats
+        document.getElementById('totalIzinAktif').textContent = stats.aktif
+        document.getElementById('totalBelumKembali').textContent = stats.belum
+        document.getElementById('totalTerlambat').textContent = stats.terlambat
+        document.getElementById('totalTepatWaktu').textContent = stats.tepat
+        
+        // Update Alerts
+        if (stats.terlambat > 0) {
+            document.getElementById('infoCard').style.display = 'flex'
+            document.getElementById('totalTerlambatInfo').textContent = stats.terlambat
+            document.getElementById('alertBadge').style.display = 'inline-flex'
+            document.getElementById('alertCount').textContent = stats.terlambat
+        } else {
+            document.getElementById('infoCard').style.display = 'none'
+            document.getElementById('alertBadge').style.display = 'none'
+        }
+        
         filteredData = [...monitoringData]; renderTable(); updatePagination()
     } catch (e) { console.error(e); showToast('error', 'Gagal memuat data') }
 }

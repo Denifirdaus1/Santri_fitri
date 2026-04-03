@@ -842,7 +842,9 @@ let currentUser = null
 // Make functions available globally for onclick handlers
 window.showLogoutPopup = showLogoutPopup
 window.konfirmasiKembali = konfirmasiKembali
-window.konfirmasiIzin = konfirmasiIzin
+window.confirmTerima = confirmTerima;
+window.confirmTolak = confirmTolak;
+window.prosesIzin = prosesIzin;
 window.showDetailIzin = showDetailIzin
 window.applyFilters = applyFilters
 window.resetFilters = resetFilters
@@ -963,9 +965,8 @@ async function loadIzinPending() {
                             <button class="btn btn-detail" onclick="showDetailIzin(${item.id_izin}, '${nama}', '${kelas}', '${item.jenis_izin}', '${item.tanggal_keluar}', '${(item.alasan || '').replace(/'/g, "\\\'")}')">
                                 <i class="fa-solid fa-eye"></i> Detail
                             </button>
-                            <button class="btn btn-konfirm" onclick="konfirmasiIzin(${item.id_izin})">
-                                <i class="fa-solid fa-check"></i> Konfirmasi
-                            </button>
+                            <button class="btn btn-acc" onclick="confirmTerima(${item.id_izin})"><i class="fa-solid fa-check"></i> Terima</button>
+                            <button class="btn btn-tolak" onclick="confirmTolak(${item.id_izin})"><i class="fa-solid fa-xmark"></i> Tolak</button>
                         </div>
                     </div>
                 `
@@ -1014,8 +1015,51 @@ function showDetailIzin(id, nama, kelas, jenis, tanggal, alasan) {
     })
 }
 
-function konfirmasiIzin(id) {
-    window.location.href = 'konfirmasi.html'
+function confirmTerima(id) {
+    showPopup({
+        type: 'confirm', title: 'Terima Izin? ✨',
+        message: 'Silakan pilih batas waktu kembali:<br><br><input type="datetime-local" id="batasWaktuInput" style="width:100%; padding:10px; border-radius:10px; border:1px solid #ccc; font-family:inherit;">', confirmText: 'Terima',
+        onConfirmFn: () => {
+            const batas = document.getElementById('batasWaktuInput').value;
+            if(!batas) {
+                showToast('error', 'Pilih batas waktu terlebih dahulu!');
+                return;
+            }
+            prosesIzin(id, 'terima', batas);
+        }
+    })
+}
+
+function confirmTolak(id) {
+    showPopup({
+        type: 'confirm', title: 'Tolak Izin? 😕',
+        message: 'Yakin ingin menolak izin ini?', confirmText: 'Tolak',
+        onConfirmFn: () => prosesIzin(id, 'tolak')
+    })
+}
+
+async function prosesIzin(id, aksi, batasWaktu = null) {
+    closePopup()
+    showToast('info', 'Memproses...')
+    try {
+        const newStatus = aksi === 'terima' ? 'disetujui' : 'ditolak'
+        const updateData = { status: newStatus }
+        if (aksi === 'terima' && batasWaktu) {
+            updateData.batas_waktu = new Date(batasWaktu).toISOString()
+        }
+        
+        const { error } = await supabase
+            .from('izin')
+            .update(updateData)
+            .eq('id_izin', id)
+
+        if (error) throw error
+        showToast('success', `Izin berhasil di${aksi === 'terima' ? 'terima' : 'tolak'}! 🎉`)
+        loadDashboard()
+    } catch (error) {
+        console.error('Error:', error)
+        showToast('error', error.message || 'Terjadi kesalahan')
+    }
 }
 
 async function loadMonitoring() {
