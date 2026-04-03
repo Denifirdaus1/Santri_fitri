@@ -50,10 +50,13 @@ export function showPopup(options) {
   if (options.type === 'confirm') {
     // Store callback globally for onclick
     window._popupConfirmCallback = options.onConfirmFn || null
+    let onclickStr = "if(window._popupConfirmCallback) { window._popupConfirmCallback(); }";
+    if (options.onConfirm) onclickStr += ` else { ${options.onConfirm} }`;
+    
     buttons = `
       <div class="popup-buttons">
         <button class="popup-btn cancel" onclick="window._closePopup()">Batal</button>
-        <button class="popup-btn confirm" onclick="if(window._popupConfirmCallback) window._popupConfirmCallback(); else ${options.onConfirm || ''}">${options.confirmText || 'Lanjutkan'}</button>
+        <button class="popup-btn confirm" onclick="${onclickStr}">${options.confirmText || 'Lanjutkan'}</button>
       </div>
     `
   } else {

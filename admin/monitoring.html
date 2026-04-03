@@ -1088,7 +1088,7 @@ window.exportExcel = exportExcel
 window.exportPDF = exportPDF
 
 function showLogoutPopup() {
-    showPopup({ type: 'confirm', title: 'Yakin mau logout? ðŸ¥º', message: 'Kamu akan kembali ke halaman login', confirmText: 'Logout',
+    showPopup({ type: 'confirm', title: 'Yakin mau logout? 🥺', message: 'Kamu akan kembali ke halaman login', confirmText: 'Logout',
         onConfirmFn: async () => { closePopup(); showToast('info', 'Logout...'); await authLogout(); setTimeout(() => { window.location.href = '/?logout=success' }, 1000) }
     })
 }

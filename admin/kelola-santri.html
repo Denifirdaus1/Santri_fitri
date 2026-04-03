@@ -790,7 +790,7 @@ window.exportExcel = exportExcel
 window.exportPDF = exportPDF
 
 function showLogoutPopup() {
-    showPopup({ type: 'confirm', title: 'Yakin mau logout? ðŸ¥º', message: 'Kamu akan kembali ke halaman login', confirmText: 'Logout',
+    showPopup({ type: 'confirm', title: 'Yakin mau logout? 🥺', message: 'Kamu akan kembali ke halaman login', confirmText: 'Logout',
         onConfirmFn: async () => { closePopup(); showToast('info', 'Logout...'); await authLogout(); setTimeout(() => { window.location.href = '/?logout=success' }, 1000) }
     })
 }
@@ -828,7 +828,7 @@ function renderTable() {
         html += `<tr><td>${start+i+1}</td><td><strong>${s.nis}</strong></td><td>${s.nama_santri}</td><td>${s.kelas}</td>
         <td>${s.jenis_kelamin === 'L' ? '<span class="badge badge-laki"><i class="fa-solid fa-mars"></i> Laki-laki</span>' : '<span class="badge badge-perempuan"><i class="fa-solid fa-venus"></i> Perempuan</span>'}</td>
         <td><div class="action-btns"><button class="btn-edit" onclick="editSantri(${s.id_santri})"><i class="fa-solid fa-edit"></i></button>
-        <button class="btn-delete" onclick="confirmHapus(${s.id_santri}, '${s.nama_santri}')"><i class="fa-solid fa-trash"></i></button></div></td></tr>`
+        <button class="btn-delete" onclick="confirmHapus(${s.id_santri}, '${s.nama_santri.replace(/'/g, "\\'")}')"><i class="fa-solid fa-trash"></i></button></div></td></tr>`
     })
     tbody.innerHTML = html
     updatePaginationInfo(filteredData.length)
@@ -857,7 +857,7 @@ function goToPage(p) { if (p > 0) { currentPage = p; renderTable() } }
 function editSantri(id) { window.location.href = `/admin/edit-santri?id=${id}` }
 
 function confirmHapus(id, nama) {
-    showPopup({ type: 'confirm', title: 'Hapus Santri? ðŸ˜¢', message: `Yakin ingin menghapus <strong>${nama}</strong>?`, confirmText: 'Hapus',
+    showPopup({ type: 'confirm', title: 'Hapus Santri? 😢', message: `Yakin ingin menghapus <strong>${nama}</strong>?`, confirmText: 'Hapus',
         onConfirmFn: () => hapusSantri(id) })
 }
 
@@ -866,7 +866,7 @@ async function hapusSantri(id) {
     try {
         const { error } = await supabase.from('santri').update({ status: 'nonaktif' }).eq('id_santri', id)
         if (error) throw error
-        showToast('success', 'Data santri berhasil dihapus! ðŸ—‘ï¸')
+        showToast('success', 'Data santri berhasil dihapus! 🗑️')
         loadSantri()
     } catch (error) {
         console.error('Error:', error); showToast('error', error.message || 'Gagal menghapus')
