@@ -1073,32 +1073,44 @@ function showDetail(id) {
 
 function confirmTerima(id) {
     showPopup({
-        type: 'confirm', title: 'Terima Izin? âœ¨',
-        message: 'Yakin ingin menerima izin ini?', confirmText: 'Terima',
-        onConfirmFn: () => prosesIzin(id, 'terima')
+        type: 'confirm', title: 'Terima Izin? ✨',
+        message: 'Silakan pilih batas waktu kembali:<br><br><input type="datetime-local" id="batasWaktuInput" style="width:100%; padding:10px; border-radius:10px; border:1px solid #ccc; font-family:inherit;">', confirmText: 'Terima',
+        onConfirmFn: () => {
+            const batas = document.getElementById('batasWaktuInput').value;
+            if(!batas) {
+                showToast('error', 'Pilih batas waktu terlebih dahulu!');
+                return;
+            }
+            prosesIzin(id, 'terima', batas);
+        }
     })
 }
 
 function confirmTolak(id) {
     showPopup({
-        type: 'confirm', title: 'Tolak Izin? ðŸ˜•',
+        type: 'confirm', title: 'Tolak Izin? 😕',
         message: 'Yakin ingin menolak izin ini?', confirmText: 'Tolak',
         onConfirmFn: () => prosesIzin(id, 'tolak')
     })
 }
 
-async function prosesIzin(id, aksi) {
+async function prosesIzin(id, aksi, batasWaktu = null) {
     closePopup()
     showToast('info', 'Memproses...')
     try {
         const newStatus = aksi === 'terima' ? 'disetujui' : 'ditolak'
+        const updateData = { status: newStatus }
+        if (aksi === 'terima' && batasWaktu) {
+            updateData.batas_waktu = new Date(batasWaktu).toISOString()
+        }
+        
         const { error } = await supabase
             .from('izin')
-            .update({ status: newStatus })
+            .update(updateData)
             .eq('id_izin', id)
 
         if (error) throw error
-        showToast('success', `Izin berhasil di${aksi === 'terima' ? 'terima' : 'tolak'}! ðŸŽ‰`)
+        showToast('success', `Izin berhasil di${aksi === 'terima' ? 'terima' : 'tolak'}! 🎉`)
         loadData()
     } catch (error) {
         console.error('Error:', error)
@@ -1116,6 +1128,12 @@ function showComingSoon(fitur) {
     setUserInfo(currentUser)
     loadData()
 })()
+
+window.showDetail = showDetail;
+window.confirmTerima = confirmTerima;
+window.confirmTolak = confirmTolak;
+window.prosesIzin = prosesIzin;
+window.showComingSoon = showComingSoon;
 </script>
 
 </body>

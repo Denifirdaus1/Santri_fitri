@@ -1050,6 +1050,13 @@ async function prosesKembali(id) {
     setMinDate()
     loadRiwayat()
 })()
+
+// Expose functions required by inline HTML events
+window.showLogoutPopup = showLogoutPopup;
+window.konfirmasiKembali = konfirmasiKembali;
+window.prosesKembali = prosesKembali;
+window.closePopup = closePopup;
+window.showPopup = showPopup;
 </script>
 
 </body>
