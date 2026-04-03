@@ -1153,7 +1153,7 @@ function nextPage() { if (currentPage < Math.ceil(filteredData.length/rowsPerPag
 function goToPage(p) { currentPage = p; renderTable(); updatePagination() }
 
 function konfirmasiKembali(id) {
-    showPopup({ type: 'confirm', title: 'Santri Sudah Kembali? ðŸ ', message: 'Konfirmasi kembali?', confirmText: 'Konfirmasi',
+    showPopup({ type: 'confirm', title: 'Santri Sudah Kembali? 🏠', message: 'Konfirmasi kembali?', confirmText: 'Konfirmasi',
         onConfirmFn: async () => {
             closePopup(); showToast('info', 'Memproses...')
             try {
@@ -1162,7 +1162,7 @@ function konfirmasiKembali(id) {
                 if (iz?.batas_waktu && new Date().getTime() > new Date(iz.batas_waktu).getTime()) sk = 'terlambat'
                 const { error } = await supabase.from('izin').update({ tanggal_kembali: new Date().toISOString(), status_kembali: sk }).eq('id_izin', id)
                 if (error) throw error
-                showToast('success', 'Konfirmasi berhasil! ðŸŽ‰'); loadMonitoring()
+                showToast('success', 'Konfirmasi berhasil! 🎉'); loadMonitoring()
             } catch(e) { showToast('error', e.message || 'Gagal') }
         }
     })

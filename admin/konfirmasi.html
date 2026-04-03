@@ -1057,7 +1057,7 @@ function showDetail(id) {
     if (!izin) return
     showPopup({
         type: 'info',
-        title: 'ðŸ“‹ Detail Permohonan Izin',
+        title: '📋 Detail Permohonan Izin',
         message: `
             <div class="detail-izin">
                 <div class="detail-item"><div class="detail-label">Nama</div><div class="detail-value">: ${izin.nama_santri}</div></div>
@@ -1119,7 +1119,7 @@ async function prosesIzin(id, aksi, batasWaktu = null) {
 }
 
 function showComingSoon(fitur) {
-    showToast('info', `Fitur ${fitur} akan segera hadir! ðŸš€`)
+    showToast('info', `Fitur ${fitur} akan segera hadir! 🚀`)
 }
 
 ;(async () => {
