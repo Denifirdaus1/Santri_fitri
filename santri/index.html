@@ -721,81 +721,7 @@ function setMinDate() {
     dateInput.value = today;
 }
 
-// ==================== POPUP FUNCTIONS ====================
-function showPopup(options) {
-    const container = document.getElementById('popupContainer');
-    
-    let icon = '';
-    let bgClass = '';
-    
-    if (options.type === 'success') {
-        icon = 'fa-circle-check';
-        bgClass = 'success';
-    } else if (options.type === 'error') {
-        icon = 'fa-circle-exclamation';
-        bgClass = 'error';
-    } else if (options.type === 'warning') {
-        icon = 'fa-triangle-exclamation';
-        bgClass = 'warning';
-    } else if (options.type === 'confirm') {
-        icon = 'fa-circle-question';
-        bgClass = 'warning';
-    }
-    
-    let buttons = '';
-    if (options.type === 'confirm') {
-        buttons = `
-            <div class="popup-buttons">
-                <button class="popup-btn cancel" onclick="closePopup()">Batal</button>
-                <button class="popup-btn confirm" onclick="${options.onConfirm}">Ya, ${options.confirmText || 'Lanjutkan'}</button>
-            </div>
-        `;
-    } else {
-        buttons = `
-            <div class="popup-buttons">
-                <button class="popup-btn confirm" onclick="closePopup()">OK</button>
-            </div>
-        `;
-    }
-    
-    container.innerHTML = `
-        <div class="popup ${bgClass}">
-            <span class="popup-close" onclick="closePopup()">&times;</span>
-            <i class="fa-solid ${icon}"></i>
-            <h3>${options.title || ''}</h3>
-            <p>${options.message || ''}</p>
-            ${buttons}
-        </div>
-    `;
-    
-    container.style.display = 'flex';
-    
-    if (options.type !== 'confirm') {
-        setTimeout(closePopup, 3000);
-    }
-}
 
-function closePopup() {
-    document.getElementById('popupContainer').style.display = 'none';
-}
-
-// ==================== TOAST NOTIFICATION ====================
-function showToast(type, message) {
-    const toast = document.createElement('div');
-    toast.className = `toast-notification ${type}`;
-    
-    let icon = type === 'success' ? 'fa-circle-check' : 
-                type === 'error' ? 'fa-circle-exclamation' : 'fa-circle-info';
-    
-    toast.innerHTML = `<i class="fa-solid ${icon}"></i><span>${message}</span>`;
-    document.body.appendChild(toast);
-    
-    setTimeout(() => {
-        toast.style.transition = 'opacity 0.5s';
-        toast.style.opacity = '0';
-        setTimeout(() => toast.remove(), 500);
-    }, 3000);
-}
 
 // ==================== LOGOUT ====================
 function showLogoutPopup() {
@@ -815,20 +741,7 @@ function showLogoutPopup() {
     })
 }
 
-// ==================== FORMAT DATE ====================
-function formatDate(dateString) {
-    const d = new Date(dateString);
-    return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
-}
 
-function formatDateTime(dateString) {
-    if (!dateString) return '-';
-    const d = new Date(dateString);
-    return d.toLocaleString('id-ID', { 
-        day: '2-digit', month: '2-digit', year: 'numeric',
-        hour: '2-digit', minute: '2-digit' 
-    });
-}
 
 // ==================== LOAD RIWAYAT ====================
 async function loadRiwayat() {
