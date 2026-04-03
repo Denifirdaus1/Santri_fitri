@@ -500,7 +500,7 @@ async function loadSantri() {
         if (data) {
             document.getElementById('nis').value = data.nis || ''
             document.getElementById('nama_santri').value = data.nama_santri || ''
-            document.getElementById('jenis_kelamin').value = data.jenis_kelamin || ''
+            if(data.jenis_kelamin) { const rb = document.querySelector('input[name="jenis_kelamin"][value="' + data.jenis_kelamin + '"]'); if(rb) rb.checked = true; }
             document.getElementById('kelas').value = data.kelas || ''
         }
     } catch (error) {
@@ -513,7 +513,7 @@ document.getElementById('editForm')?.addEventListener('submit', async (e) => {
     e.preventDefault()
     const nis = document.getElementById('nis').value
     const nama = document.getElementById('nama_santri').value
-    const jk = document.getElementById('jenis_kelamin').value
+    const jkRadio = document.querySelector('input[name="jenis_kelamin"]:checked'); const jk = jkRadio ? jkRadio.value : null
     const kelas = document.getElementById('kelas').value
 
     if (!nis || !nama || !jk || !kelas) { showToast('error', 'Semua field harus diisi!'); return }

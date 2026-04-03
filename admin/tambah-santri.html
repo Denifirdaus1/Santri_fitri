@@ -650,13 +650,10 @@
                             <i class="fa-solid fa-save"></i>
                             Simpan Data
                         </button>
-                        <button type="button" class="btn btn-secondary" onclick="kembali()">
+                        <a href="/admin/kelola-santri" class="btn btn-secondary">
                             <i class="fa-solid fa-arrow-left"></i>
                             Kembali
-                        </button>
-                    </div>
-                    
-                    <div class="info-text">
+                        </a></div><div class="info-text">
                         <i class="fa-regular fa-circle-check" style="color: #1e3c72;"></i>
                         Pastikan data yang diisi sudah benar sebelum menyimpan
                     </div>
@@ -681,11 +678,12 @@ function showLogoutPopup() {
     })
 }
 
-document.getElementById('tambahForm')?.addEventListener('submit', async (e) => {
+document.getElementById('tambahSantriForm')?.addEventListener('submit', async (e) => {
     e.preventDefault()
     const nis = document.getElementById('nis').value
-    const nama = document.getElementById('nama_santri').value
-    const jk = document.getElementById('jenis_kelamin').value
+    const nama = document.getElementById('nama').value
+    const jkRadio = document.querySelector('input[name="jenis_kelamin"]:checked')
+    const jk = jkRadio ? jkRadio.value : null
     const kelas = document.getElementById('kelas').value
 
     if (!nis || !nama || !jk || !kelas) { showToast('error', 'Semua field harus diisi!'); return }
@@ -697,8 +695,10 @@ document.getElementById('tambahForm')?.addEventListener('submit', async (e) => {
     try {
         const { error } = await supabase.from('santri').insert({ nis, nama_santri: nama, jenis_kelamin: jk, kelas })
         if (error) throw error
-        showPopup({ type: 'success', title: 'Berhasil! ðŸŽ‰', message: 'Data santri berhasil ditambahkan!' })
+        
+        showPopup({ type: 'success', title: 'Berhasil! 🎉', message: 'Data santri berhasil ditambahkan!' })
         e.target.reset()
+        setTimeout(() => { window.location.href = '/admin/kelola-santri' }, 1500)
     } catch (error) {
         console.error('Error:', error)
         showToast('error', error.message || 'Gagal menyimpan data')
