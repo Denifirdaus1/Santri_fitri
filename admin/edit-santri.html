@@ -494,6 +494,9 @@ const santriId = urlParams.get('id')
 
 async function loadSantri() {
     if (!santriId) { showToast('error', 'ID santri tidak ditemukan'); return }
+    
+    document.getElementById('loadingContainer').style.display = 'block';
+    
     try {
         const { data, error } = await supabase.from('santri').select('*').eq('id_santri', santriId).single()
         if (error) throw error
@@ -502,9 +505,13 @@ async function loadSantri() {
             document.getElementById('nama_santri').value = data.nama_santri || ''
             if(data.jenis_kelamin) { const rb = document.querySelector('input[name="jenis_kelamin"][value="' + data.jenis_kelamin + '"]'); if(rb) rb.checked = true; }
             document.getElementById('kelas').value = data.kelas || ''
+            
+            document.getElementById('loadingContainer').style.display = 'none';
+            document.getElementById('formContainer').style.display = 'block';
         }
     } catch (error) {
         console.error('Error:', error)
+        document.getElementById('loadingContainer').style.display = 'none';
         showToast('error', 'Gagal memuat data santri')
     }
 }
