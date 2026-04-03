@@ -635,6 +635,7 @@
     </style>
 </head>
 <body>
+<div class="mobile-overlay" onclick="document.querySelector('.sidebar').classList.remove('active'); this.classList.remove('active')"></div>
 
 <div class="wrapper">
 
@@ -686,6 +687,8 @@
 
         <div class="header">
             <div class="header-left">
+<button class="mobile-menu-btn" onclick="document.querySelector('.sidebar').classList.toggle('active'); document.querySelector('.mobile-overlay').classList.toggle('active')"><i class="fa-solid fa-bars"></i></button>
+
                 <h3><i class="fa-solid fa-gauge"></i> Dashboard Admin</h3>
             </div>
             

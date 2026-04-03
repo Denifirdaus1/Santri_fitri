@@ -882,6 +882,7 @@
     </style>
 </head>
 <body>
+<div class="mobile-overlay" onclick="document.querySelector('.sidebar').classList.remove('active'); this.classList.remove('active')"></div>
 
 <!-- SIDEBAR -->
 <div class="sidebar">
@@ -931,6 +932,8 @@
     <!-- HEADER -->
     <div class="header">
         <div class="header-left">
+<button class="mobile-menu-btn" onclick="document.querySelector('.sidebar').classList.toggle('active'); document.querySelector('.mobile-overlay').classList.toggle('active')"><i class="fa-solid fa-bars"></i></button>
+
             <h3><i class="fa-solid fa-chart-pie"></i> Rekap Perizinan</h3>
             <div class="breadcrumb">
                 <a href="/admin">Beranda</a> > Rekap Perizinan
