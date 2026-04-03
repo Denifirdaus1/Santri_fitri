@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Daftar Akun Santri</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Pendaftaran akun santri - Sistem Perizinan Santri">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/global.css">
+    <style>
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', sans-serif;
+            padding: 20px;
+        }
+
+        .card {
+            width: 500px;
+            max-width: 100%;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: fadeInUp 0.5s ease-out;
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .card-header h2 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .card-header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .card-body {
+            padding: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .form-group label i {
+            color: #1b5e20;
+            margin-right: 5px;
+        }
+
+        .input-icon {
+            position: relative;
+        }
+
+        .input-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #1b5e20;
+            font-size: 16px;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 14px 18px;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+            font-size: 15px;
+            outline: none;
+            transition: all 0.3s;
+            background: #fafafa;
+        }
+
+        select {
+            cursor: pointer;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 16px;
+            appearance: none;
+            padding-right: 45px;
+        }
+
+        select:focus, input:focus {
+            border-color: #1b5e20;
+            box-shadow: 0 0 0 3px rgba(27,94,32,0.1);
+            background: white;
+        }
+
+        .input-icon input {
+            padding-left: 45px;
+        }
+
+        .btn-register {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #1b5e20, #2e7d32);
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-register:hover {
+            background: linear-gradient(135deg, #2e7d32, #1b5e20);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(27,94,32,0.3);
+        }
+
+        .btn-register:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 25px;
+            color: #2e7d32;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        a:hover {
+            color: #1b5e20;
+            text-decoration: underline;
+        }
+
+        .message {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        .message.error {
+            background: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #c62828;
+        }
+
+        .message.success {
+            background: #e8f5e9;
+            color: #1b5e20;
+            border-left: 4px solid #1b5e20;
+        }
+
+        .message i {
+            font-size: 20px;
+        }
+
+        .info-text {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .info-text i {
+            color: #1b5e20;
+        }
+
+        .empty-state {
+            padding: 30px;
+            text-align: center;
+            color: #999;
+            border: 2px dashed #e0e0e0;
+            border-radius: 10px;
+            background: #f9f9f9;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            color: #ddd;
+            margin-bottom: 15px;
+        }
+
+        .nis-help {
+            font-size: 12px;
+            color: #888;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .nis-help i { color: #1b5e20; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="card-header">
+            <h2><i class="fa-solid fa-user-plus"></i> Daftar Akun Santri</h2>
+            <p>Pilih nama santri dan buat akun untuk login</p>
+        </div>
+        
+        <div class="card-body">
+            <div id="notification"></div>
+
+            <form id="registerForm">
+                <div class="form-group">
+                    <label><i class="fa-solid fa-graduation-cap"></i> Pilih Santri</label>
+                    <select name="id_santri" id="id_santri" required>
+                        <option value="">-- Memuat data santri... --</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fa-solid fa-id-card"></i> NIS (Username Login)</label>
+                    <div class="input-icon">
+                        <i class="fa-regular fa-id-card"></i>
+                        <input type="text" id="username" placeholder="NIS akan terisi otomatis" readonly>
+                    </div>
+                    <div class="nis-help">
+                        <i class="fa-solid fa-info-circle"></i> NIS ini akan digunakan sebagai username login
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fa-solid fa-lock"></i> Password</label>
+                    <div class="input-icon">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="password" placeholder="Masukkan password (min. 6 karakter)" required minlength="6">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-register" id="registerBtn">
+                    <i class="fa-solid fa-check-circle"></i> Daftar Akun
+                </button>
+            </form>
+
+            <a href="index.html">
+                <i class="fa-solid fa-arrow-left"></i> Kembali ke Login
+            </a>
+            
+            <div class="info-text">
+                <i class="fa-regular fa-circle-info"></i> Pastikan data yang diisi sudah benar
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+    import { supabase } from './js/supabase-client.js'
+    import { registerSantri } from './js/auth.js'
+
+    // Simpan data santri yang dipilih
+    let selectedSantriNis = ''
+
+    // Tampilkan notifikasi
+    function showNotification(type, message) {
+        const notif = document.getElementById('notification');
+        const icon = type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation';
+        
+        notif.innerHTML = `
+            <div class="message ${type}">
+                <i class="fa-solid ${icon}"></i>
+                <span>${message}</span>
+            </div>
+        `;
+        
+        setTimeout(() => {
+            notif.innerHTML = '';
+        }, 5000);
+    }
+
+    // Load data santri yang belum punya akun
+    async function loadSantri() {
+        try {
+            // Ambil semua santri
+            const { data: allSantri, error: santriError } = await supabase
+                .from('santri')
+                .select('id_santri, nis, nama_santri, kelas')
+                .eq('status', 'aktif')
+                .order('nama_santri')
+
+            if (santriError) throw santriError
+
+            // Ambil santri yang sudah punya akun
+            const { data: registeredSantri, error: profileError } = await supabase
+                .from('santri_profiles')
+                .select('id_santri')
+
+            // Filter: hanya santri yang belum punya akun
+            const registeredIds = (registeredSantri || []).map(p => p.id_santri)
+            const availableSantri = (allSantri || []).filter(s => !registeredIds.includes(s.id_santri))
+            
+            const select = document.getElementById('id_santri')
+            
+            if (availableSantri.length > 0) {
+                let options = '<option value="">-- Pilih Nama Santri --</option>'
+                availableSantri.forEach(santri => {
+                    options += `<option value="${santri.id_santri}" data-nis="${santri.nis}">
+                        ${santri.nama_santri} (${santri.nis}) - ${santri.kelas}
+                    </option>`
+                })
+                select.innerHTML = options
+            } else {
+                select.innerHTML = '<option value="" disabled>Semua santri sudah terdaftar</option>'
+            }
+        } catch (error) {
+            console.error('Error:', error)
+            showNotification('error', 'Gagal memuat data santri')
+        }
+    }
+
+    // Auto-fill NIS saat santri dipilih
+    document.getElementById('id_santri').addEventListener('change', (e) => {
+        const selected = e.target.options[e.target.selectedIndex]
+        selectedSantriNis = selected.dataset.nis || ''
+        document.getElementById('username').value = selectedSantriNis
+    })
+
+    // Handle register form
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const id_santri = document.getElementById('id_santri').value;
+        const password = document.getElementById('password').value;
+        const registerBtn = document.getElementById('registerBtn');
+        
+        if (!id_santri || !selectedSantriNis) {
+            showNotification('error', 'Pilih santri terlebih dahulu');
+            return;
+        }
+        
+        if (!password || password.length < 6) {
+            showNotification('error', 'Password minimal 6 karakter');
+            return;
+        }
+        
+        // Show loading
+        const originalText = registerBtn.innerHTML;
+        registerBtn.innerHTML = '<span class="loading-spinner"></span> Memproses...';
+        registerBtn.disabled = true;
+        
+        try {
+            await registerSantri(selectedSantriNis, password, id_santri)
+            
+            showNotification('success', 'Pendaftaran berhasil! Mengalihkan...');
+            
+            setTimeout(() => {
+                window.location.href = 'index.html?registered=success';
+            }, 1500);
+        } catch (error) {
+            console.error('Error:', error);
+            showNotification('error', error.message || 'Pendaftaran gagal');
+            registerBtn.innerHTML = originalText;
+            registerBtn.disabled = false;
+        }
+    });
+
+    // Load data on page load
+    loadSantri()
+    </script>
+</body>
+</html>

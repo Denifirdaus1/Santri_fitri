@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Admin | Pesantren</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/global.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        body {
+            background: #f8f9fa;
+            display: flex;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 250px;
+            background: #1b5e20;
+            min-height: 100vh;
+            padding: 20px;
+            color: white;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            position: fixed;
+        }
+        .sidebar-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        .sidebar-logo {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 15px;
+            background: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #1b5e20;
+            font-weight: bold;
+        }
+        .sidebar h3 {
+            margin: 0;
+            color: white;
+            font-size: 18px;
+        }
+        .sidebar small {
+            color: #c8e6c9;
+            font-size: 12px;
+        }
+        .menu {
+            margin-top: 20px;
+        }
+        .menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            border-radius: 10px;
+            color: white;
+            text-decoration: none;
+            margin-bottom: 8px;
+            font-weight: 500;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
+        }
+        .menu a.active {
+            background: rgba(255,255,255,0.15);
+            border-left: 4px solid #4caf50;
+        }
+        .menu a:hover {
+            background: rgba(255,255,255,0.1);
+            border-left: 4px solid #81c784;
+        }
+        .menu-separator {
+            height: 1px;
+            background: rgba(255,255,255,0.2);
+            margin: 15px 0;
+        }
+
+        /* MAIN */
+        .main {
+            flex: 1;
+            margin-left: 250px;
+        }
+
+        /* HEADER */
+        .header {
+            background: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e0e0e0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .header-left h3 {
+            margin: 0;
+            color: #1b5e20;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 15px;
+            background: #f5f5f5;
+            border-radius: 20px;
+        }
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            background: #1b5e20;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .separator {
+            color: #ddd;
+            margin: 0 10px;
+        }
+
+        /* CONTENT */
+        .content {
+            padding: 30px;
+        }
+
+        /* CARD */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border-left: 5px solid #4caf50;
+            animation: fadeInUp 0.5s ease-out;
+        }
+        .card.red {
+            border-left: 5px solid #f44336;
+        }
+        .card .icon {
+            font-size: 32px;
+            padding: 15px;
+            border-radius: 10px;
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        .card.red .icon {
+            background: #ffebee;
+            color: #d32f2f;
+        }
+        .card h2 {
+            margin: 5px 0;
+            font-size: 28px;
+        }
+        .card small {
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* IZIN CARDS */
+        .izin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .izin-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid #e0e0e0;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .izin-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            border-color: #1b5e20;
+        }
+        .izin-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: #ff9800;
+        }
+        .izin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .izin-header h4 {
+            font-size: 18px;
+            color: #1b5e20;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .izin-badge {
+            background: #fff3e0;
+            color: #ef6c00;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .izin-body {
+            margin-bottom: 20px;
+        }
+        .izin-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            color: #666;
+            font-size: 14px;
+        }
+        .izin-info i {
+            width: 20px;
+            color: #1b5e20;
+        }
+        .izin-alasan {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-size: 14px;
+            color: #444;
+            border-left: 3px solid #1b5e20;
+        }
+        .izin-footer {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+
+        /* TABLE MONITORING */
+        .box {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .box h4 {
+            margin-top: 0;
+            color: #1b5e20;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #4caf50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 18px;
+        }
+        .export-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .btn-export {
+            background: #1b5e20;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn-export:hover {
+            background: #2e7d32;
+            transform: translateY(-2px);
+        }
+        .btn-export.excel-btn {
+            background: #1b5e20;
+        }
+        .btn-export.pdf-btn {
+            background: #f44336;
+        }
+        .btn-export.pdf-btn:hover {
+            background: #d32f2f;
+        }
+        
+        /* TABLE STYLES */
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+            width: 100%;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+        }
+        th {
+            background: #e8f5e9;
+            color: #1b5e20;
+            padding: 12px 10px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #4caf50;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+        td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+            font-size: 13px;
+        }
+        tr:hover {
+            background: #f9f9f9;
+        }
+
+        /* STATUS BADGE */
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            min-width: 90px;
+            justify-content: center;
+        }
+        .status-tepat {
+            background: #c8e6c9;
+            color: #1b5e20;
+        }
+        .status-terlambat {
+            background: #ffcdd2;
+            color: #c62828;
+        }
+        .status-belum {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .status-selesai {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        /* BUTTON STYLES */
+        .action-buttons {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 6px 12px;
+            border-radius: 5px;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            border: none;
+            transition: all 0.3s;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        .btn-konfirm {
+            background: #4caf50;
+            color: white;
+        }
+        .btn-konfirm:hover {
+            background: #43a047;
+            transform: translateY(-2px);
+            box-shadow: 0 3px 6px rgba(76, 175, 80, 0.3);
+        }
+        .btn-selesai {
+            background: #9e9e9e;
+            color: white;
+            cursor: default;
+        }
+        .btn-detail {
+            background: #757575;
+            color: white;
+        }
+        .btn-detail:hover {
+            background: #616161;
+            transform: translateY(-2px);
+        }
+
+        /* FILTER SECTION */
+        .filter-section {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 13px;
+            min-width: 130px;
+        }
+
+        /* SECTION TITLE */
+        .section-title {
+            background: linear-gradient(135deg, #c8e6c9, #a5d6a7);
+            color: #1b5e20;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin: 25px 0 15px 0;
+            font-weight: 600;
+            border-left: 5px solid #2e7d32;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* POPUP ANIMASI */
+        .popup-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            pointer-events: none;
+        }
+        .popup {
+            background: white;
+            padding: 30px 35px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            text-align: center;
+            animation: popIn 0.5s ease-out;
+            pointer-events: all;
+            max-width: 400px;
+            position: relative;
+        }
+        .popup.success { border-top: 5px solid #4caf50; }
+        .popup.error { border-top: 5px solid #f44336; }
+        .popup.warning { border-top: 5px solid #ff9800; }
+        .popup i { font-size: 50px; margin-bottom: 15px; }
+        .popup.success i { color: #4caf50; }
+        .popup.error i { color: #f44336; }
+        .popup.warning i { color: #ff9800; }
+        .popup h3 { margin-bottom: 10px; color: #333; font-size: 20px; }
+        .popup p { margin-bottom: 20px; color: #666; font-size: 14px; }
+        .popup-buttons { display: flex; gap: 10px; justify-content: center; }
+        .popup-btn {
+            padding: 8px 25px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        .popup-btn.confirm { background: #4caf50; color: white; }
+        .popup-btn.cancel { background: #f44336; color: white; }
+        .popup-btn:hover { transform: translateY(-2px); box-shadow: 0 3px 8px rgba(0,0,0,0.2); }
+        .popup-close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 20px;
+            cursor: pointer;
+            color: #999;
+        }
+        .popup-close:hover { color: #333; }
+
+        /* DETAIL IZIN POPUP */
+        .detail-izin {
+            text-align: left;
+            margin-top: 10px;
+        }
+        .detail-item {
+            display: flex;
+            margin-bottom: 10px;
+            border-bottom: 1px dashed #eee;
+            padding-bottom: 8px;
+        }
+        .detail-label {
+            width: 100px;
+            font-weight: 600;
+            color: #1b5e20;
+        }
+        .detail-value {
+            flex: 1;
+            color: #333;
+        }
+
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.5); }
+            70% { transform: scale(1.1); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .toast-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 9998;
+            animation: slideInRight 0.5s ease-out;
+            border-left: 4px solid;
+        }
+        .toast-notification.success { border-left-color: #4caf50; }
+        .toast-notification.error { border-left-color: #f44336; }
+        .toast-notification.info { border-left-color: #2196f3; }
+        .toast-notification i { font-size: 20px; }
+        .toast-notification.success i { color: #4caf50; }
+        .toast-notification.error i { color: #f44336; }
+        .toast-notification.info i { color: #2196f3; }
+        .toast-notification span { font-size: 13px; }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(100px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 3px solid rgba(0,0,0,0.1);
+            border-radius: 50%;
+            border-top-color: #1b5e20;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .empty-state i {
+            font-size: 48px;
+            color: #ddd;
+            margin-bottom: 15px;
+        }
+        .empty-state h4 {
+            color: #666;
+            font-weight: normal;
+            font-size: 16px;
+        }
+
+        /* PAGINATION */
+        .pagination-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            color: #666;
+            font-size: 13px;
+        }
+        .pagination {
+            display: flex;
+            gap: 5px;
+        }
+        .page-btn {
+            width: 32px;
+            height: 32px;
+            border: 1px solid #e9ecef;
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            font-size: 13px;
+        }
+        .page-btn:hover {
+            background: #e8f5e9;
+            border-color: #1b5e20;
+        }
+        .page-btn.active {
+            background: #1b5e20;
+            color: white;
+            border-color: #1b5e20;
+        }
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <img src="../assets/img/logo.png" 
+                     alt="Logo Pesantren" 
+                     style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
+            </div>
+            <h3>Pesantren<br>Tanwirul Qulub</h3>
+            <small>Sistem Perizinan Santri</small>
+        </div>
+
+        <div class="menu">
+            <a href="index.html" class="active">
+                <i class="fa-solid fa-house"></i> Beranda
+            </a>
+            
+            <div class="menu-separator"></div>
+            
+            <a href="kelola-santri.html">
+                <i class="fa-solid fa-users"></i> Kelola Data Santri
+            </a>
+            <a href="rekap.html">
+                <i class="fa-solid fa-file-lines"></i> Rekap Perizinan
+            </a>
+            
+            <div class="menu-separator"></div>
+            
+            <a href="konfirmasi.html">
+                <i class="fa-solid fa-check"></i> Konfirmasi Perizinan
+            </a>
+            <a href="monitoring.html">
+                <i class="fa-solid fa-eye"></i> Monitoring
+            </a>
+            
+            <div class="menu-separator"></div>
+            
+            <a href="#" onclick="showLogoutPopup()">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </a>
+        </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+        <div class="header">
+            <div class="header-left">
+                <h3><i class="fa-solid fa-gauge"></i> Dashboard Admin</h3>
+            </div>
+            
+            <div class="header-right">
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">
+                        A
+                    </div>
+                    <div>
+                        <div style="font-weight:600;" id="userName">Loading...</div>
+                        <div style="font-size:12px; color:#666;">Administrator</div>
+                    </div>
+                </div>
+                <span class="separator">|</span>
+                <small style="color:#666;" id="currentDate"></small>
+            </div>
+        </div>
+
+        <div class="content">
+
+            <!-- STATISTIK -->
+            <div class="cards" id="statsCards">
+                <div class="card" style="justify-content: center;">
+                    <div class="loading-spinner"></div>
+                    <span style="margin-left: 10px;">Memuat data...</span>
+                </div>
+            </div>
+
+            <!-- KONFIRMASI IZIN -->
+            <div class="section-title">
+                <i class="fa-solid fa-check"></i> Konfirmasi Perizinan
+                <a href="konfirmasi.html" style="color: #1b5e20; font-size: 13px; text-decoration: none;">
+                    Lihat Semua <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <div id="izinContainer">
+                <div class="izin-item" style="text-align:center; color:#666;">
+                    <i class="fa-solid fa-spinner fa-spin" style="font-size:24px;"></i><br>
+                    Memuat data izin...
+                </div>
+            </div>
+
+            <!-- MONITORING SANTRI -->
+            <div class="section-title">
+                <i class="fa-solid fa-eye"></i> Monitoring Santri
+            </div>
+
+            <!-- FILTER SECTION -->
+            <div class="filter-section">
+                <select id="filterKelas" class="filter-select">
+                    <option value="">Semua Kelas</option>
+                    <option value="Ula">Ula</option>
+                    <option value="Ulya">Ulya</option>
+                    <option value="Wustho">Wustho</option>
+                </select>
+                
+                <select id="filterStatus" class="filter-select">
+                    <option value="">Semua Status</option>
+                    <option value="Belum Kembali">Belum Kembali</option>
+                    <option value="Terlambat">Terlambat</option>
+                    <option value="Tepat Waktu">Tepat Waktu</option>
+                    <option value="Sudah Kembali">Sudah Kembali</option>
+                </select>
+                
+                <button class="btn-export" onclick="applyFilters()">
+                    <i class="fa-solid fa-filter"></i> Terapkan
+                </button>
+                <button class="btn-export" onclick="resetFilters()" style="background: #757575;">
+                    <i class="fa-solid fa-rotate"></i> Reset
+                </button>
+            </div>
+
+            <div class="box">
+                <h4>
+                    Monitoring Santri (Overdue)
+                    <div class="export-buttons">
+                        <button onclick="exportExcel()" class="btn-export excel-btn">
+                            <i class="fa-solid fa-file-excel"></i> Excel
+                        </button>
+                        <button onclick="exportPDF()" class="btn-export pdf-btn">
+                            <i class="fa-solid fa-file-pdf"></i> PDF
+                        </button>
+                    </div>
+                </h4>
+                
+                <div class="table-container">
+                    <table id="monitoringTable">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Nama Santri</th>
+                                <th>Kelas</th>
+                                <th>Tujuan Izin</th>
+                                <th>Tanggal Keluar</th>
+                                <th>Batas Waktu</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="monitoringBody">
+                            <tr>
+                                <td colspan="8" style="text-align:center; padding:30px;">
+                                    <i class="fa-solid fa-spinner fa-spin" style="font-size:24px;"></i><br>
+                                    Memuat data monitoring...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- PAGINATION -->
+                <div class="pagination-info">
+                    <div id="paginationInfo">
+                        <i class="fa-solid fa-database"></i> Menampilkan 0 data
+                    </div>
+                    <div class="pagination" id="paginationButtons">
+                        <button class="page-btn" onclick="prevPage()" id="prevBtn"><i class="fa-solid fa-chevron-left"></i></button>
+                        <span id="pageNumbers"></span>
+                        <button class="page-btn" onclick="nextPage()" id="nextBtn"><i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- POPUP KONFIRMASI -->
+<div id="popupContainer" class="popup-container" style="display: none;"></div>
+
+<!-- SheetJS -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<!-- jsPDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<!-- AutoTable -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
+<script type="module">
+import { supabase } from '../js/supabase-client.js'
+import { requireAuth, getUserName, logout as authLogout } from '../js/auth.js'
+import { showToast, showPopup, closePopup, setUserInfo } from '../js/utils.js'
+
+// ==================== GLOBAL VARIABLES ====================
+let monitoringData = []
+let filteredData = []
+let currentPage = 1
+const rowsPerPage = 10
+let currentUser = null
+
+// Make functions available globally for onclick handlers
+window.showLogoutPopup = showLogoutPopup
+window.konfirmasiKembali = konfirmasiKembali
+window.konfirmasiIzin = konfirmasiIzin
+window.showDetailIzin = showDetailIzin
+window.applyFilters = applyFilters
+window.resetFilters = resetFilters
+window.prevPage = prevPage
+window.nextPage = nextPage
+window.goToPage = goToPage
+window.exportExcel = exportExcel
+window.exportPDF = exportPDF
+
+// ==================== LOGOUT ====================
+function showLogoutPopup() {
+    showPopup({
+        type: 'confirm',
+        title: 'Yakin mau logout? \ud83e\udd7a',
+        message: 'Kamu akan kembali ke halaman login',
+        confirmText: 'Logout',
+        onConfirmFn: async () => {
+            closePopup()
+            showToast('info', 'Logout...')
+            await authLogout()
+            setTimeout(() => {
+                window.location.href = '../index.html?logout=success'
+            }, 1000)
+        }
+    })
+}
+
+// ==================== LOAD DATA ====================
+async function loadDashboard() {
+    try {
+        await loadStats()
+        await loadIzinPending()
+        await loadMonitoring()
+    } catch (error) {
+        console.error('Error:', error)
+        showToast('error', 'Gagal memuat data')
+    }
+}
+
+async function loadStats() {
+    try {
+        // Total santri
+        const { count: totalSantri } = await supabase
+            .from('santri')
+            .select('*', { count: 'exact', head: true })
+
+        // Izin pending
+        const { count: izinPending } = await supabase
+            .from('izin')
+            .select('*', { count: 'exact', head: true })
+            .eq('status', 'menunggu')
+
+        // Santri terlambat (disetujui tapi belum kembali & melewati batas)
+        const { data: izinAktif } = await supabase
+            .from('izin')
+            .select('batas_waktu')
+            .eq('status', 'disetujui')
+            .is('tanggal_kembali', null)
+
+        let santriTerlambat = 0
+        const now = new Date().getTime()
+        ;(izinAktif || []).forEach(izin => {
+            if (izin.batas_waktu && new Date(izin.batas_waktu).getTime() < now) {
+                santriTerlambat++
+            }
+        })
+
+        document.getElementById('statsCards').innerHTML = `
+            <div class="card">
+                <div><small>Total Santri</small><h2>${totalSantri || 0}</h2></div>
+                <div class="icon"><i class="fa-solid fa-users"></i></div>
+            </div>
+            <div class="card">
+                <div><small>Izin Pending</small><h2>${izinPending || 0}</h2></div>
+                <div class="icon"><i class="fa-solid fa-file-circle-question"></i></div>
+            </div>
+            <div class="card red">
+                <div><small>Santri Terlambat</small><h2>${santriTerlambat}</h2></div>
+                <div class="icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            </div>
+        `
+    } catch (error) {
+        console.error('Error loading stats:', error)
+    }
+}
+
+async function loadIzinPending() {
+    try {
+        const { data, error } = await supabase
+            .from('izin')
+            .select('*, santri(nama_santri, kelas)')
+            .eq('status', 'menunggu')
+            .order('created_at', { ascending: false })
+
+        if (error) throw error
+        
+        const container = document.getElementById('izinContainer')
+        
+        if (data && data.length > 0) {
+            let html = '<div class="izin-grid">';
+            
+            data.slice(0, 3).forEach(item => {
+                const nama = item.santri?.nama_santri || '-'
+                const kelas = item.santri?.kelas || '-'
+                html += `
+                    <div class="izin-card">
+                        <div class="izin-header">
+                            <h4><i class="fa-solid fa-user-graduate"></i> ${nama}</h4>
+                            <span class="izin-badge"><i class="fa-regular fa-clock"></i> Menunggu</span>
+                        </div>
+                        <div class="izin-body">
+                            <div class="izin-info"><i class="fa-solid fa-tag"></i> Jenis: <strong>${item.jenis_izin}</strong></div>
+                            <div class="izin-info"><i class="fa-solid fa-calendar"></i> Tanggal: <strong>${item.tanggal_keluar ? new Date(item.tanggal_keluar).toLocaleDateString('id-ID') : '-'}</strong></div>
+                            <div class="izin-info"><i class="fa-solid fa-building"></i> Kelas: <strong>${kelas}</strong></div>
+                            <div class="izin-alasan"><i class="fa-solid fa-quote-right"></i> ${item.alasan || '-'}</div>
+                        </div>
+                        <div class="izin-footer">
+                            <button class="btn btn-detail" onclick="showDetailIzin(${item.id_izin}, '${nama}', '${kelas}', '${item.jenis_izin}', '${item.tanggal_keluar}', '${(item.alasan || '').replace(/'/g, "\\\'")}')">
+                                <i class="fa-solid fa-eye"></i> Detail
+                            </button>
+                            <button class="btn btn-konfirm" onclick="konfirmasiIzin(${item.id_izin})">
+                                <i class="fa-solid fa-check"></i> Konfirmasi
+                            </button>
+                        </div>
+                    </div>
+                `
+            })
+            
+            html += '</div>'
+            
+            if (data.length > 3) {
+                html += `
+                    <div style="text-align:center; margin-top:20px;">
+                        <a href="konfirmasi.html" style="color:#1b5e20; text-decoration:none; font-weight:600;">
+                            Lihat Semua (${data.length}) <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                `
+            }
+            
+            container.innerHTML = html
+        } else {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fa-regular fa-circle-check"></i>
+                    <h4>Tidak ada izin pending</h4>
+                </div>
+            `
+        }
+    } catch (error) {
+        console.error('Error loading izin:', error)
+    }
+}
+
+function showDetailIzin(id, nama, kelas, jenis, tanggal, alasan) {
+    showPopup({
+        type: 'info',
+        title: '\ud83d\udccb Detail Permohonan Izin',
+        message: `
+            <div class="detail-izin">
+                <div class="detail-item"><div class="detail-label">Nama</div><div class="detail-value">: ${nama}</div></div>
+                <div class="detail-item"><div class="detail-label">Kelas</div><div class="detail-value">: ${kelas}</div></div>
+                <div class="detail-item"><div class="detail-label">Jenis Izin</div><div class="detail-value">: ${jenis}</div></div>
+                <div class="detail-item"><div class="detail-label">Tanggal</div><div class="detail-value">: ${tanggal ? new Date(tanggal).toLocaleDateString('id-ID') : '-'}</div></div>
+                <div class="detail-item"><div class="detail-label">Alasan</div><div class="detail-value">: ${alasan}</div></div>
+                <div class="detail-item"><div class="detail-label">Status</div><div class="detail-value">: <span class="status-badge status-belum">Menunggu</span></div></div>
+            </div>
+        `
+    })
+}
+
+function konfirmasiIzin(id) {
+    window.location.href = 'konfirmasi.html'
+}
+
+async function loadMonitoring() {
+    try {
+        const { data, error } = await supabase
+            .from('izin')
+            .select('*, santri(nama_santri, kelas)')
+            .eq('status', 'disetujui')
+            .order('tanggal_keluar', { ascending: false })
+
+        if (error) throw error
+        
+        if (data) {
+            // Transform data untuk kompatibilitas dengan render
+            monitoringData = data.map(item => {
+                let status = 'Belum Kembali'
+                if (item.tanggal_kembali) {
+                    status = item.status_kembali === 'tepat_waktu' ? 'Tepat Waktu' : 'Terlambat'
+                } else if (item.batas_waktu) {
+                    const batas = new Date(item.batas_waktu).getTime()
+                    if (new Date().getTime() > batas) {
+                        status = 'Terlambat'
+                    }
+                }
+
+                return {
+                    ...item,
+                    nama_santri: item.santri?.nama_santri || '-',
+                    kelas: item.santri?.kelas || '-',
+                    status: status,
+                    tanggal_keluar: item.tanggal_keluar ? new Date(item.tanggal_keluar).toLocaleDateString('id-ID') : '-',
+                    batas_waktu: item.batas_waktu ? new Date(item.batas_waktu).toLocaleDateString('id-ID') : '-'
+                }
+            })
+            filteredData = [...monitoringData]
+            renderMonitoringTable()
+            updatePagination()
+        }
+    } catch (error) {
+        console.error('Error loading monitoring:', error)
+    }
+}
+
+function renderMonitoringTable() {
+    const tbody = document.getElementById('monitoringBody')
+    
+    if (filteredData.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="8" class="empty-state">
+                    <i class="fa-solid fa-users-slash"></i>
+                    <h4>Tidak ada data monitoring</h4>
+                </td>
+            </tr>
+        `
+        return
+    }
+    
+    const start = (currentPage - 1) * rowsPerPage
+    const end = start + rowsPerPage
+    const pageData = filteredData.slice(start, end)
+    
+    let html = ''
+    pageData.forEach((item, index) => {
+        const no = start + index + 1
+        
+        let statusClass = ''
+        let statusIcon = ''
+        
+        if (item.status === 'Tepat Waktu') {
+            statusClass = 'status-tepat'
+            statusIcon = 'fa-solid fa-check'
+        } else if (item.status === 'Terlambat') {
+            statusClass = 'status-terlambat'
+            statusIcon = 'fa-solid fa-exclamation'
+        } else if (item.status === 'Belum Kembali') {
+            statusClass = 'status-belum'
+            statusIcon = 'fa-regular fa-clock'
+        } else {
+            statusClass = 'status-selesai'
+            statusIcon = 'fa-solid fa-check-double'
+        }
+        
+        let tujuan = item.jenis_izin || '-'
+        const alasan = item.alasan || ''
+        if (alasan.trim() !== '') {
+            tujuan = `${item.jenis_izin} (${alasan})`
+        }
+        
+        html += `
+            <tr>
+                <td>${no}</td>
+                <td><strong>${item.nama_santri}</strong></td>
+                <td>${item.kelas}</td>
+                <td>${tujuan}</td>
+                <td>${item.tanggal_keluar}</td>
+                <td>${item.batas_waktu}</td>
+                <td>
+                    <span class="status-badge ${statusClass}">
+                        <i class="${statusIcon}"></i> ${item.status}
+                    </span>
+                </td>
+                <td>
+                    <div class="action-buttons">
+                        ${!item.tanggal_kembali ? 
+                            `<button class="btn btn-konfirm" onclick="konfirmasiKembali(${item.id_izin})">
+                                <i class="fa-solid fa-check"></i> Konfirmasi
+                            </button>` : 
+                            `<span class="btn btn-selesai">
+                                <i class="fa-solid fa-check-double"></i> Selesai
+                            </span>`
+                        }
+                    </div>
+                </td>
+            </tr>
+        `
+    })
+    
+    tbody.innerHTML = html
+}
+
+// ==================== FILTER FUNCTIONS ====================
+function applyFilters() {
+    const kelasFilter = document.getElementById('filterKelas').value
+    const statusFilter = document.getElementById('filterStatus').value
+    
+    filteredData = monitoringData.filter(item => {
+        const matchKelas = !kelasFilter || item.kelas === kelasFilter
+        const matchStatus = !statusFilter || item.status === statusFilter
+        return matchKelas && matchStatus
+    })
+    
+    currentPage = 1
+    renderMonitoringTable()
+    updatePagination()
+    showToast('success', 'Filter diterapkan')
+}
+
+function resetFilters() {
+    document.getElementById('filterKelas').value = ''
+    document.getElementById('filterStatus').value = ''
+    filteredData = [...monitoringData]
+    currentPage = 1
+    renderMonitoringTable()
+    updatePagination()
+    showToast('info', 'Filter direset')
+}
+
+// ==================== PAGINATION ====================
+function updatePagination() {
+    const totalPages = Math.ceil(filteredData.length / rowsPerPage)
+    const start = (currentPage - 1) * rowsPerPage + 1
+    const end = Math.min(currentPage * rowsPerPage, filteredData.length)
+    
+    if (filteredData.length === 0) {
+        document.getElementById('paginationInfo').innerHTML = '<i class="fa-solid fa-database"></i> Tidak ada data'
+        document.getElementById('pageNumbers').innerHTML = ''
+        document.getElementById('prevBtn').disabled = true
+        document.getElementById('nextBtn').disabled = true
+        return
+    }
+    
+    document.getElementById('paginationInfo').innerHTML = 
+        `<i class="fa-solid fa-database"></i> Menampilkan ${start} sampai ${end} dari ${filteredData.length} data`
+    
+    let pageNumbers = ''
+    for (let i = 1; i <= totalPages; i++) {
+        if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+            pageNumbers += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`
+        } else if (i === currentPage - 2 || i === currentPage + 2) {
+            pageNumbers += `<button class="page-btn" disabled>...</button>`
+        }
+    }
+    
+    document.getElementById('pageNumbers').innerHTML = pageNumbers
+    document.getElementById('prevBtn').disabled = currentPage === 1
+    document.getElementById('nextBtn').disabled = currentPage === totalPages
+}
+
+function prevPage() { if (currentPage > 1) { currentPage--; renderMonitoringTable(); updatePagination(); } }
+function nextPage() { const tp = Math.ceil(filteredData.length / rowsPerPage); if (currentPage < tp) { currentPage++; renderMonitoringTable(); updatePagination(); } }
+function goToPage(page) { currentPage = page; renderMonitoringTable(); updatePagination(); }
+
+// ==================== KONFIRMASI KEMBALI ====================
+function konfirmasiKembali(id) {
+    showPopup({
+        type: 'confirm',
+        title: 'Santri Sudah Kembali? \ud83c\udfe0',
+        message: 'Konfirmasi bahwa santri sudah kembali ke pondok?',
+        confirmText: 'Konfirmasi',
+        onConfirmFn: () => prosesKonfirmasi(id)
+    })
+}
+
+async function prosesKonfirmasi(id) {
+    closePopup()
+    showToast('info', 'Memproses...')
+    
+    try {
+        // Cek batas waktu
+        const { data: izinData } = await supabase
+            .from('izin')
+            .select('batas_waktu')
+            .eq('id_izin', id)
+            .single()
+
+        let statusKembali = 'tepat_waktu'
+        if (izinData?.batas_waktu) {
+            if (new Date().getTime() > new Date(izinData.batas_waktu).getTime()) {
+                statusKembali = 'terlambat'
+            }
+        }
+
+        const { error } = await supabase
+            .from('izin')
+            .update({
+                tanggal_kembali: new Date().toISOString(),
+                status_kembali: statusKembali
+            })
+            .eq('id_izin', id)
+
+        if (error) throw error
+        
+        showToast('success', 'Konfirmasi berhasil! \ud83c\udf89')
+        loadMonitoring()
+    } catch (error) {
+        console.error('Error:', error)
+        showToast('error', error.message || 'Terjadi kesalahan')
+    }
+}
+
+// ==================== EXPORT (via Edge Functions) ====================
+async function exportExcel() {
+    if (filteredData.length === 0) {
+        showToast('error', 'Tidak ada data untuk diexport')
+        return
+    }
+    showToast('info', 'Mengunduh Excel...')
+    
+    try {
+        const { data, error } = await supabase.functions.invoke('export-excel', {
+            body: {
+                filterKelas: document.getElementById('filterKelas')?.value || null,
+                startDate: null,
+                endDate: null
+            }
+        })
+
+        if (error) throw error
+        
+        const blob = new Blob([data], { type: 'text/csv' })
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = `Monitoring_Santri_${new Date().toISOString().split('T')[0]}.csv`
+        a.click()
+        URL.revokeObjectURL(url)
+        showToast('success', 'Excel berhasil didownload \ud83d\udcca')
+    } catch (error) {
+        // Fallback: export dari data yang sudah ada di client
+        console.warn('Edge Function not available, using client-side export:', error)
+        clientExportCSV()
+    }
+}
+
+function clientExportCSV() {
+    let csv = '\uFEFF' // BOM
+    csv += 'No,Nama Santri,Kelas,Tujuan Izin,Tanggal Keluar,Batas Waktu,Status\n'
+    filteredData.forEach((item, i) => {
+        let tujuan = item.jenis_izin || '-'
+        if (item.alasan?.trim()) tujuan = `${item.jenis_izin} (${item.alasan})`
+        csv += `${i+1},"${item.nama_santri}","${item.kelas}","${tujuan}","${item.tanggal_keluar}","${item.batas_waktu}","${item.status}"\n`
+    })
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `Monitoring_Santri_${new Date().toISOString().split('T')[0]}.csv`
+    a.click()
+    URL.revokeObjectURL(url)
+    showToast('success', 'CSV berhasil didownload \ud83d\udcca')
+}
+
+async function exportPDF() {
+    if (filteredData.length === 0) {
+        showToast('error', 'Tidak ada data untuk diexport')
+        return
+    }
+    showToast('info', 'Mengunduh PDF...')
+    
+    try {
+        const { data, error } = await supabase.functions.invoke('export-pdf', {
+            body: {
+                filterKelas: document.getElementById('filterKelas')?.value || null,
+                startDate: null,
+                endDate: null
+            }
+        })
+
+        if (error) throw error
+        
+        const printWindow = window.open('', '_blank')
+        printWindow.document.write(data)
+        printWindow.document.close()
+        printWindow.onload = () => printWindow.print()
+        showToast('success', 'PDF siap dicetak \ud83d\udcc4')
+    } catch (error) {
+        console.warn('Edge Function not available, using client-side print:', error)
+        clientPrintPDF()
+    }
+}
+
+function clientPrintPDF() {
+    // Simple client-side print fallback
+    const printWindow = window.open('', '_blank')
+    let rows = ''
+    filteredData.forEach((item, i) => {
+        let tujuan = item.jenis_izin || '-'
+        if (item.alasan?.trim()) tujuan += ` (${item.alasan})`
+        rows += `<tr><td>${i+1}</td><td>${item.nama_santri}</td><td>${item.kelas}</td><td>${tujuan}</td><td>${item.tanggal_keluar}</td><td>${item.batas_waktu}</td><td>${item.status}</td></tr>`
+    })
+    printWindow.document.write(`
+        <html><head><title>Monitoring Santri</title>
+        <style>body{font-family:Arial;padding:20px}h1{color:#1b5e20;text-align:center}table{width:100%;border-collapse:collapse;margin-top:20px}th{background:#1b5e20;color:white;padding:8px}td{padding:6px;border-bottom:1px solid #ddd}tr:nth-child(even){background:#f9f9f9}</style></head>
+        <body><h1>Monitoring Santri - Pesantren Tanwirul Qulub</h1>
+        <p>Tanggal Cetak: ${new Date().toLocaleDateString('id-ID')}</p>
+        <table><thead><tr><th>No</th><th>Nama</th><th>Kelas</th><th>Tujuan</th><th>Tgl Keluar</th><th>Batas Waktu</th><th>Status</th></tr></thead>
+        <tbody>${rows}</tbody></table></body></html>
+    `)
+    printWindow.document.close()
+    printWindow.onload = () => printWindow.print()
+    showToast('success', 'PDF siap dicetak \ud83d\udcc4')
+}
+
+// ==================== INIT ====================
+;(async () => {
+    currentUser = await requireAuth('admin', '../index.html')
+    if (!currentUser) return
+    
+    setUserInfo(currentUser)
+    loadDashboard()
+})()
+</script>
+</body>
+</html>

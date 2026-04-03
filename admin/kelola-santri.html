@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Kelola Data Santri</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/global.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f8f9fa;
+            display: flex;
+        }
+
+        /* SIDEBAR NAVBAR */
+        .sidebar {
+            width: 250px;
+            background: #1b5e20;
+            min-height: 100vh;
+            padding: 20px;
+            color: white;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            position: fixed;
+            left: 0;
+            top: 0;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .sidebar-logo {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 15px;
+            background: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #1b5e20;
+            font-weight: bold;
+        }
+
+        .sidebar h3 {
+            margin: 0;
+            color: white;
+            font-size: 18px;
+        }
+
+        .sidebar small {
+            color: #c8e6c9;
+            font-size: 12px;
+        }
+
+        .menu {
+            margin-top: 20px;
+        }
+
+        .menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            border-radius: 10px;
+            color: white;
+            text-decoration: none;
+            margin-bottom: 8px;
+            font-weight: 500;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
+            cursor: pointer;
+        }
+
+        .menu a.active {
+            background: rgba(255,255,255,0.15);
+            border-left: 4px solid #4caf50;
+        }
+
+        .menu a:hover {
+            background: rgba(255,255,255,0.1);
+            border-left: 4px solid #81c784;
+        }
+
+        .menu-separator {
+            height: 1px;
+            background: rgba(255,255,255,0.2);
+            margin: 15px 0;
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            min-height: 100vh;
+        }
+
+        /* HEADER */
+        .header {
+            background: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e0e0e0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .header-left h3 {
+            margin: 0;
+            color: #1b5e20;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 15px;
+            background: #f5f5f5;
+            border-radius: 20px;
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            background: #1b5e20;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .separator {
+            color: #ddd;
+            margin: 0 10px;
+        }
+
+        /* CONTENT */
+        .content {
+            padding: 30px;
+        }
+
+        /* SECTION TITLE */
+        .section-title {
+            background: linear-gradient(135deg, #c8e6c9, #a5d6a7);
+            color: #1b5e20;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 25px 0 20px 0;
+            font-weight: 600;
+            border-left: 5px solid #2e7d32;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* FILTER SECTION */
+        .filter-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 8px 15px;
+            width: 300px;
+        }
+
+        .search-box input {
+            border: none;
+            background: transparent;
+            padding: 8px 0;
+            width: 100%;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .search-box i {
+            color: #999;
+            margin-right: 10px;
+        }
+
+        .filter-right {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .class-filter {
+            padding: 10px 20px;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            background: white;
+            color: #333;
+            font-size: 14px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .btn-tambah {
+            background: #1b5e20;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.3s;
+            text-decoration: none;
+        }
+
+        .btn-tambah:hover {
+            background: #2e7d32;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(27,94,32,0.3);
+        }
+
+        /* TABLE */
+        .box {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #e8f5e9;
+            color: #1b5e20;
+            padding: 15px 12px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #4caf50;
+        }
+
+        td {
+            padding: 15px 12px;
+            border-bottom: 1px solid #eee;
+            color: #444;
+            font-size: 14px;
+            vertical-align: middle;
+        }
+
+        tr:hover {
+            background: #f9f9f9;
+        }
+
+        /* ACTION BUTTONS */
+        .action-btns {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-edit {
+            background: #ffc107;
+            color: #333;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .btn-edit:hover {
+            background: #e0a800;
+            transform: scale(1.1);
+        }
+
+        .btn-delete {
+            background: #f44336;
+            color: white;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .btn-delete:hover {
+            background: #d32f2f;
+            transform: scale(1.1);
+        }
+
+        /* PAGINATION */
+        .pagination-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .pagination {
+            display: flex;
+            gap: 8px;
+        }
+
+        .page-btn {
+            width: 36px;
+            height: 36px;
+            border: 1px solid #e9ecef;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .page-btn:hover {
+            background: #e8f5e9;
+            border-color: #1b5e20;
+        }
+
+        .page-btn.active {
+            background: #1b5e20;
+            color: white;
+            border-color: #1b5e20;
+        }
+
+        /* BADGE */
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-laki {
+            background: #c8e6c9;
+            color: #1b5e20;
+        }
+
+        .badge-perempuan {
+            background: #f8bbd0;
+            color: #880e4f;
+        }
+
+        /* EXPORT BUTTONS */
+        .export-buttons button {
+            background: #1b5e20;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .export-buttons button:hover {
+            background: #2e7d32;
+            transform: translateY(-2px);
+        }
+
+        /* POPUP ANIMASI */
+        .popup-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            pointer-events: none;
+        }
+        .popup {
+            background: white;
+            padding: 30px 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            text-align: center;
+            animation: popIn 0.5s ease-out;
+            pointer-events: all;
+            max-width: 400px;
+            position: relative;
+        }
+        .popup.success {
+            border-top: 5px solid #4caf50;
+        }
+        .popup.error {
+            border-top: 5px solid #f44336;
+        }
+        .popup.warning {
+            border-top: 5px solid #ff9800;
+        }
+        .popup i {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+        .popup.success i {
+            color: #4caf50;
+        }
+        .popup.error i {
+            color: #f44336;
+        }
+        .popup.warning i {
+            color: #ff9800;
+        }
+        .popup h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .popup p {
+            margin-bottom: 20px;
+            color: #666;
+        }
+        .popup-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        .popup-btn {
+            padding: 10px 30px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .popup-btn.confirm {
+            background: #4caf50;
+            color: white;
+        }
+        .popup-btn.cancel {
+            background: #f44336;
+            color: white;
+        }
+        .popup-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+        }
+        .popup-close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 20px;
+            cursor: pointer;
+            color: #999;
+        }
+        .popup-close:hover {
+            color: #333;
+        }
+
+        @keyframes popIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            70% {
+                transform: scale(1.1);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* DETAIL SANTRI POPUP */
+        .detail-santri {
+            text-align: left;
+            margin-top: 10px;
+        }
+        .detail-item {
+            display: flex;
+            margin-bottom: 12px;
+            border-bottom: 1px dashed #eee;
+            padding-bottom: 8px;
+        }
+        .detail-label {
+            width: 120px;
+            font-weight: 600;
+            color: #1b5e20;
+        }
+        .detail-value {
+            flex: 1;
+            color: #333;
+        }
+
+        /* TOAST NOTIFICATION */
+        .toast-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 9998;
+            animation: slideInRight 0.5s ease-out;
+            border-left: 4px solid;
+        }
+        .toast-notification.success {
+            border-left-color: #4caf50;
+        }
+        .toast-notification.error {
+            border-left-color: #f44336;
+        }
+        .toast-notification.info {
+            border-left-color: #2196f3;
+        }
+        .toast-notification i {
+            font-size: 24px;
+        }
+        .toast-notification.success i {
+            color: #4caf50;
+        }
+        .toast-notification.error i {
+            color: #f44336;
+        }
+        .toast-notification.info i {
+            color: #2196f3;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0,0,0,0.1);
+            border-radius: 50%;
+            border-top-color: #1b5e20;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <div class="sidebar-header">
+        <div class="sidebar-logo">
+            <img src="../assets/img/logo.png" 
+                 alt="Logo Pesantren" 
+                 style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
+        </div>
+        <h3>Pesantren<br>Tanwirul Qulub</h3>
+        <small>Sistem Perizinan Santri</small>
+    </div>
+
+    <div class="menu">
+        <a href="index.html">
+            <i class="fa-solid fa-house"></i> Beranda
+        </a>
+        
+        <div class="menu-separator"></div>
+        
+        <a href="kelola-santri.html" class="active">
+            <i class="fa-solid fa-users"></i> Kelola Data Santri
+        </a>
+        <a href="rekap.html">
+            <i class="fa-solid fa-file-lines"></i> Rekap Perizinan
+        </a>
+        
+        <div class="menu-separator"></div>
+        
+        <a href="konfirmasi.html">
+            <i class="fa-solid fa-check"></i> Konfirmasi Perizinan
+        </a>
+        <a href="monitoring.html">
+            <i class="fa-solid fa-eye"></i> Monitoring
+        </a>
+        
+        <div class="menu-separator"></div>
+        
+        <a href="#" onclick="showLogoutPopup()">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </a>
+    </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main-content">
+    <!-- HEADER -->
+    <div class="header">
+        <div class="header-left">
+            <h3><i class="fa-solid fa-users-gear"></i> Kelola Data Santri</h3>
+        </div>
+        
+        <div class="header-right">
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">
+                    A
+                </div>
+                <div>
+                    <div style="font-weight:600;" id="userName">Loading...</div>
+                    <div style="font-size:12px; color:#666;">Administrator</div>
+                </div>
+            </div>
+            <span class="separator">|</span>
+            <small style="color:#666;" id="currentDate"></small>
+        </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+        <!-- FILTER SECTION -->
+        <div class="filter-section">
+            <div class="search-box">
+                <i class="fa-solid fa-search"></i>
+                <input type="text" placeholder="Cari santri..." id="searchInput" onkeyup="filterTable()">
+            </div>
+            
+            <div class="filter-right">
+                <select class="class-filter" id="classFilter" onchange="filterTable()">
+                    <option value="">Semua Kelas</option>
+                    <option value="Ula">Ula</option>
+                    <option value="Wustho">Wustho</option>
+                    <option value="Ulya">Ulya</option>
+                </select>
+                
+                <select class="class-filter" id="genderFilter" onchange="filterTable()">
+                    <option value="">Semua Gender</option>
+                    <option value="L">Laki-laki</option>
+                    <option value="P">Perempuan</option>
+                </select>
+                
+               <a href="tambah-santri.html" class="btn-tambah">
+    <i class="fa-solid fa-plus"></i>
+    Tambah Santri
+</a>
+
+            </div>
+            
+        </div>
+        
+
+        <!-- SECTION TITLE -->
+        <div class="section-title">
+            <span><i class="fa-solid fa-list"></i> Daftar Santri</span>
+            <div class="export-buttons">
+                <button onclick="exportExcel()"><i class="fa-solid fa-file-excel"></i> Excel</button>
+                <button onclick="exportPDF()"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+            </div>
+        </div>
+
+        <!-- TABLE -->
+        <div class="box">
+            <div class="table-container">
+                <table id="santriTable">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>NIS</th>
+                            <th>Nama Santri</th>
+                            <th>Kelas</th>
+                            <th>Jenis Kelamin</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="santriBody">
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: 40px;">
+                                <i class="fa-solid fa-spinner fa-spin" style="font-size: 48px; color: #1b5e20;"></i>
+                                <br>
+                                Memuat data santri...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- PAGINATION INFO -->
+            <div class="pagination-info">
+                <div id="paginationInfo">
+                    <i class="fa-solid fa-database"></i> Memuat data...
+                </div>
+                
+                <div class="pagination" id="paginationButtons">
+                    <button class="page-btn" onclick="previousPage()">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    <button class="page-btn active">1</button>
+                    <button class="page-btn" onclick="nextPage()">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+<!-- POPUP CONTAINER -->
+<div id="popupContainer" class="popup-container" style="display: none;"></div>
+<!-- SheetJS untuk Excel -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+<!-- jsPDF untuk PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<!-- jsPDF AutoTable untuk tabel -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
+<script type="module">
+import { supabase } from '../js/supabase-client.js'
+import { requireAuth, logout as authLogout } from '../js/auth.js'
+import { showToast, showPopup, closePopup, setUserInfo } from '../js/utils.js'
+
+let semuaSantri = []
+let currentPage = 1
+const rowsPerPage = 10
+
+window.showLogoutPopup = showLogoutPopup
+window.filterTable = filterTable
+window.previousPage = previousPage
+window.nextPage = nextPage
+window.goToPage = goToPage
+window.editSantri = editSantri
+window.confirmHapus = confirmHapus
+window.exportExcel = exportExcel
+window.exportPDF = exportPDF
+
+function showLogoutPopup() {
+    showPopup({ type: 'confirm', title: 'Yakin mau logout? ðŸ¥º', message: 'Kamu akan kembali ke halaman login', confirmText: 'Logout',
+        onConfirmFn: async () => { closePopup(); showToast('info', 'Logout...'); await authLogout(); setTimeout(() => { window.location.href = '../index.html?logout=success' }, 1000) }
+    })
+}
+
+async function loadSantri() {
+    try {
+        const { data, error } = await supabase.from('santri').select('*').eq('status', 'aktif').order('nama_santri')
+        if (error) throw error
+        semuaSantri = data || []
+        renderTable()
+        updatePaginationInfo()
+    } catch (error) {
+        console.error('Error:', error)
+        showToast('error', 'Gagal memuat data santri')
+    }
+}
+
+function renderTable() {
+    const tbody = document.getElementById('santriBody')
+    if (semuaSantri.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px"><i class="fa-solid fa-users-slash" style="font-size:48px;color:#ddd"></i><br>Belum ada data santri</td></tr>'
+        return
+    }
+    const searchValue = document.getElementById('searchInput').value.toLowerCase()
+    const classFilter = document.getElementById('classFilter').value
+    const genderFilter = document.getElementById('genderFilter').value
+    let filteredData = semuaSantri.filter(s => {
+        const matchSearch = s.nama_santri.toLowerCase().includes(searchValue) || s.nis.toLowerCase().includes(searchValue)
+        return matchSearch && (!classFilter || s.kelas === classFilter) && (!genderFilter || s.jenis_kelamin === genderFilter)
+    })
+    const start = (currentPage - 1) * rowsPerPage
+    const paginatedData = filteredData.slice(start, start + rowsPerPage)
+    let html = ''
+    paginatedData.forEach((s, i) => {
+        html += `<tr><td>${start+i+1}</td><td><strong>${s.nis}</strong></td><td>${s.nama_santri}</td><td>${s.kelas}</td>
+        <td>${s.jenis_kelamin === 'L' ? '<span class="badge badge-laki"><i class="fa-solid fa-mars"></i> Laki-laki</span>' : '<span class="badge badge-perempuan"><i class="fa-solid fa-venus"></i> Perempuan</span>'}</td>
+        <td><div class="action-btns"><button class="btn-edit" onclick="editSantri(${s.id_santri})"><i class="fa-solid fa-edit"></i></button>
+        <button class="btn-delete" onclick="confirmHapus(${s.id_santri}, '${s.nama_santri}')"><i class="fa-solid fa-trash"></i></button></div></td></tr>`
+    })
+    tbody.innerHTML = html
+    updatePaginationInfo(filteredData.length)
+}
+
+function filterTable() { currentPage = 1; renderTable() }
+
+function updatePaginationInfo(totalItems = semuaSantri.length) {
+    const totalPages = Math.ceil(totalItems / rowsPerPage)
+    const start = (currentPage - 1) * rowsPerPage + 1
+    const end = Math.min(currentPage * rowsPerPage, totalItems)
+    document.getElementById('paginationInfo').innerHTML = `<i class="fa-solid fa-database"></i> Menampilkan ${start} sampai ${end} dari ${totalItems} data`
+    let btns = `<button class="page-btn" onclick="goToPage(${currentPage-1})" ${currentPage===1?'disabled':''}><i class="fa-solid fa-chevron-left"></i></button>`
+    for (let i = 1; i <= totalPages; i++) {
+        if (i === 1 || i === totalPages || (i >= currentPage-1 && i <= currentPage+1)) btns += `<button class="page-btn ${i===currentPage?'active':''}" onclick="goToPage(${i})">${i}</button>`
+        else if (i === currentPage-2 || i === currentPage+2) btns += '<button class="page-btn" disabled>...</button>'
+    }
+    btns += `<button class="page-btn" onclick="goToPage(${currentPage+1})" ${currentPage===totalPages?'disabled':''}><i class="fa-solid fa-chevron-right"></i></button>`
+    document.getElementById('paginationButtons').innerHTML = btns
+}
+
+function previousPage() { if (currentPage > 1) { currentPage--; renderTable() } }
+function nextPage() { if (currentPage < Math.ceil(semuaSantri.length/rowsPerPage)) { currentPage++; renderTable() } }
+function goToPage(p) { if (p > 0) { currentPage = p; renderTable() } }
+
+function editSantri(id) { window.location.href = `edit-santri.html?id=${id}` }
+
+function confirmHapus(id, nama) {
+    showPopup({ type: 'confirm', title: 'Hapus Santri? ðŸ˜¢', message: `Yakin ingin menghapus <strong>${nama}</strong>?`, confirmText: 'Hapus',
+        onConfirmFn: () => hapusSantri(id) })
+}
+
+async function hapusSantri(id) {
+    closePopup(); showToast('info', 'Menghapus data...')
+    try {
+        const { error } = await supabase.from('santri').update({ status: 'nonaktif' }).eq('id_santri', id)
+        if (error) throw error
+        showToast('success', 'Data santri berhasil dihapus! ðŸ—‘ï¸')
+        loadSantri()
+    } catch (error) {
+        console.error('Error:', error); showToast('error', error.message || 'Gagal menghapus')
+    }
+}
+
+async function exportExcel() { showToast('info', 'Menyiapkan export...'); try { const { data, error } = await supabase.functions.invoke('export-data', { body: { table: 'santri', format: 'csv' } }); if (error) throw error; const blob = new Blob([data], { type: 'text/csv;charset=utf-8;' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'Data_Santri.csv'; a.click(); showToast('success', 'Excel berhasil didownload 📊'); } catch (e) { console.error(e); showToast('error', 'Gagal export data: ' + e.message); } }
+
+function exportPDF() {
+    if (semuaSantri.length === 0) { showToast('error', 'Tidak ada data'); return }
+    const w = window.open('', '_blank')
+    let rows = ''; semuaSantri.forEach((s,i) => { rows += `<tr><td>${i+1}</td><td>${s.nis}</td><td>${s.nama_santri}</td><td>${s.kelas}</td><td>${s.jenis_kelamin==='L'?'L':'P'}</td></tr>` })
+    w.document.write(`<html><head><title>Data Santri</title><style>body{font-family:Arial;padding:20px}h1{color:#1b5e20}table{width:100%;border-collapse:collapse}th{background:#1b5e20;color:white;padding:8px}td{padding:6px;border-bottom:1px solid #ddd}</style></head>
+    <body><h1>Data Santri - Pesantren Tanwirul Qulub</h1><table><thead><tr><th>No</th><th>NIS</th><th>Nama</th><th>Kelas</th><th>JK</th></tr></thead><tbody>${rows}</tbody></table></body></html>`)
+    w.document.close(); w.onload = () => w.print()
+    showToast('success', 'PDF siap dicetak ðŸ“„')
+}
+
+;(async () => {
+    const user = await requireAuth('admin', '../index.html')
+    if (!user) return
+    setUserInfo(user)
+    loadSantri()
+})()
+</script>
+
+</body>
+</html>

@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah Santri Baru</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/global.css">
+    <style>
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+        }
+        
+        body { 
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 650px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            overflow: hidden;
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, #283048 0%, #1e3c72 100%);
+            color: white;
+            padding: 30px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .card-header h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .card-header p {
+            opacity: 0.9;
+            font-size: 15px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .card-body {
+            padding: 40px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+        }
+        
+        .form-group label i {
+            margin-right: 8px;
+            color: #1e3c72;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #1e3c72;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(30, 60, 114, 0.1);
+        }
+        
+        .form-control:hover {
+            border-color: #2a5298;
+        }
+        
+        .radio-group {
+            display: flex;
+            gap: 30px;
+            margin-top: 8px;
+        }
+        
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 10px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            background: #fafafa;
+            flex: 1;
+            justify-content: center;
+        }
+        
+        .radio-group label:hover {
+            border-color: #1e3c72;
+            background: #f0f4f8;
+            transform: translateY(-2px);
+        }
+        
+        .radio-group input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #1e3c72;
+            cursor: pointer;
+        }
+        
+        .radio-group .fa-mars { color: #2196f3; font-size: 18px; }
+        .radio-group .fa-venus { color: #e91e63; font-size: 18px; }
+        
+        select.form-control {
+            cursor: pointer;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 18px center;
+            background-size: 16px;
+            appearance: none;
+            background-color: #fafafa;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 35px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-decoration: none;
+            letter-spacing: 0.5px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(30, 60, 114, 0.4);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #757575, #616161);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-secondary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn-secondary:hover::before {
+            left: 100%;
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(97, 97, 97, 0.4);
+        }
+        
+        /* POPUP GEMOY LUCU */
+        .popup-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            pointer-events: none;
+        }
+        
+        .popup {
+            background: white;
+            padding: 35px 45px;
+            border-radius: 30px;
+            box-shadow: 0 30px 50px rgba(0,0,0,0.3);
+            text-align: center;
+            animation: gemoyPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: all;
+            max-width: 450px;
+            position: relative;
+            border: 3px solid;
+        }
+        
+        .popup.success {
+            border-color: #4caf50;
+            background: linear-gradient(145deg, #ffffff, #f0fff0);
+        }
+        
+        .popup.error {
+            border-color: #f44336;
+            background: linear-gradient(145deg, #ffffff, #fff0f0);
+        }
+        
+        .popup.warning {
+            border-color: #ff9800;
+            background: linear-gradient(145deg, #ffffff, #fff7e6);
+        }
+        
+        .popup i {
+            font-size: 80px;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2));
+            animation: bounce 2s infinite;
+        }
+        
+        .popup.success i {
+            color: #4caf50;
+        }
+        
+        .popup.error i {
+            color: #f44336;
+        }
+        
+        .popup.warning i {
+            color: #ff9800;
+        }
+        
+        .popup h3 {
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        .popup p {
+            margin-bottom: 25px;
+            color: #666;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        
+        .popup-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+        
+        .popup-btn {
+            padding: 12px 35px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .popup-btn.confirm {
+            background: #4caf50;
+            color: white;
+        }
+        
+        .popup-btn.cancel {
+            background: #f44336;
+            color: white;
+        }
+        
+        .popup-btn.ok {
+            background: #1e3c72;
+            color: white;
+            padding: 12px 50px;
+        }
+        
+        .popup-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+        
+        .popup-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+        
+        .popup-close:hover {
+            background: #f0f0f0;
+            color: #333;
+            transform: rotate(90deg);
+        }
+
+        @keyframes gemoyPop {
+            0% {
+                opacity: 0;
+                transform: scale(0.3) rotate(-10deg);
+            }
+            50% {
+                transform: scale(1.1) rotate(2deg);
+            }
+            70% {
+                transform: scale(0.95) rotate(-1deg);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) rotate(0);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        /* TOAST NOTIFICATION GEMOY */
+        .toast-notification {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: white;
+            padding: 20px 30px;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 9998;
+            animation: slideInGemoy 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border-left: 6px solid;
+            max-width: 400px;
+        }
+        
+        .toast-notification.success {
+            border-left-color: #4caf50;
+            background: linear-gradient(145deg, #ffffff, #f0fff0);
+        }
+        
+        .toast-notification.error {
+            border-left-color: #f44336;
+            background: linear-gradient(145deg, #ffffff, #fff0f0);
+        }
+        
+        .toast-notification.info {
+            border-left-color: #2196f3;
+            background: linear-gradient(145deg, #ffffff, #e3f2fd);
+        }
+        
+        .toast-notification i {
+            font-size: 30px;
+        }
+        
+        .toast-notification.success i {
+            color: #4caf50;
+            animation: bounce 2s infinite;
+        }
+        
+        .toast-notification.error i {
+            color: #f44336;
+        }
+        
+        .toast-notification.info i {
+            color: #2196f3;
+        }
+        
+        .toast-notification span {
+            font-size: 15px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        @keyframes slideInGemoy {
+            0% {
+                opacity: 0;
+                transform: translateX(100px) rotate(5deg);
+            }
+            70% {
+                transform: translateX(-10px) rotate(-2deg);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0) rotate(0);
+            }
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 4px solid rgba(30, 60, 114, 0.2);
+            border-radius: 50%;
+            border-top-color: #1e3c72;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .info-text {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        
+        .info-text i {
+            color: #1e3c72;
+        }
+        
+        /* Input icon styling */
+        .input-icon {
+            position: relative;
+        }
+        
+        .input-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #1e3c72;
+            font-size: 16px;
+        }
+        
+        .input-icon input,
+        .input-icon select {
+            padding-left: 45px;
+        }
+
+        .validation-error {
+            border-color: #f44336 !important;
+            animation: shake 0.3s ease-in-out;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .error-message {
+            color: #f44336;
+            font-size: 12px;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h2>
+                    <i class="fa-solid fa-user-plus"></i>
+                    Tambah Santri Baru
+                </h2>
+                <p>Isi formulir berikut untuk menambahkan data santri</p>
+            </div>
+            
+            <div class="card-body">
+                <div id="notification"></div>
+                
+                <form id="tambahSantriForm">
+                    <div class="form-group">
+                        <label>
+                            <i class="fa-solid fa-id-card"></i>
+                            Nomor Induk Santri (NIS)
+                            <span class="required">*</span>
+                        </label>
+                        <div class="input-icon">
+                            <i class="fa-solid fa-hashtag"></i>
+                            <input type="text" 
+                                   id="nis"
+                                   name="nis" 
+                                   class="form-control" 
+                                   required 
+                                   maxlength="20" 
+                                   placeholder="Contoh: 2024001"
+                                   autocomplete="off">
+                        </div>
+                        <small style="color: #666; margin-top: 5px; display: block;">
+                            <i class="fa-regular fa-circle-info"></i> 
+                            NIS harus unik dan tidak boleh sama dengan santri lain
+                        </small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>
+                            <i class="fa-solid fa-user"></i>
+                            Nama Lengkap
+                            <span class="required">*</span>
+                        </label>
+                        <div class="input-icon">
+                            <i class="fa-regular fa-user"></i>
+                            <input type="text" 
+                                   id="nama"
+                                   name="nama_santri" 
+                                   class="form-control" 
+                                   required 
+                                   placeholder="Contoh: Muhammad Fulan"
+                                   autocomplete="off">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>
+                            <i class="fa-solid fa-venus-mars"></i>
+                            Jenis Kelamin
+                            <span class="required">*</span>
+                        </label>
+                        <div class="radio-group">
+                            <label>
+                                <input type="radio" name="jenis_kelamin" value="L" required> 
+                                <i class="fa-solid fa-mars"></i> Laki-laki
+                            </label>
+                            <label>
+                                <input type="radio" name="jenis_kelamin" value="P" required> 
+                                <i class="fa-solid fa-venus"></i> Perempuan
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>
+                            <i class="fa-solid fa-layer-group"></i>
+                            Kelas / Tingkatan
+                            <span class="required">*</span>
+                        </label>
+                        <div class="input-icon">
+                            <i class="fa-solid fa-school"></i>
+                            <select id="kelas" name="kelas" class="form-control" required>
+                                <option value="" disabled selected>-- Pilih Kelas --</option>
+                                <option value="Ula">Ula (Tingkat Dasar)</option>
+                                <option value="Wustho">Wustho (Tingkat Menengah)</option>
+                                <option value="Ulya">Ulya (Tingkat Atas)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary" id="submitBtn">
+                            <i class="fa-solid fa-save"></i>
+                            Simpan Data
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="kembali()">
+                            <i class="fa-solid fa-arrow-left"></i>
+                            Kembali
+                        </button>
+                    </div>
+                    
+                    <div class="info-text">
+                        <i class="fa-regular fa-circle-check" style="color: #1e3c72;"></i>
+                        Pastikan data yang diisi sudah benar sebelum menyimpan
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- POPUP CONTAINER -->
+    <div id="popupContainer" class="popup-container" style="display: none;"></div>
+
+    <script type="module">
+import { supabase } from '../js/supabase-client.js'
+import { requireAuth, logout as authLogout } from '../js/auth.js'
+import { showToast, showPopup, closePopup, setUserInfo } from '../js/utils.js'
+
+window.showLogoutPopup = showLogoutPopup
+
+function showLogoutPopup() {
+    showPopup({ type: 'confirm', title: 'Yakin mau logout? ðŸ¥º', message: 'Kamu akan kembali ke halaman login', confirmText: 'Logout',
+        onConfirmFn: async () => { closePopup(); showToast('info', 'Logout...'); await authLogout(); setTimeout(() => { window.location.href = '../index.html?logout=success' }, 1000) }
+    })
+}
+
+document.getElementById('tambahForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault()
+    const nis = document.getElementById('nis').value
+    const nama = document.getElementById('nama_santri').value
+    const jk = document.getElementById('jenis_kelamin').value
+    const kelas = document.getElementById('kelas').value
+
+    if (!nis || !nama || !jk || !kelas) { showToast('error', 'Semua field harus diisi!'); return }
+
+    const btn = e.target.querySelector('button[type="submit"]')
+    const orig = btn.innerHTML
+    btn.innerHTML = '<span class="loading-spinner"></span> Menyimpan...'; btn.disabled = true
+
+    try {
+        const { error } = await supabase.from('santri').insert({ nis, nama_santri: nama, jenis_kelamin: jk, kelas })
+        if (error) throw error
+        showPopup({ type: 'success', title: 'Berhasil! ðŸŽ‰', message: 'Data santri berhasil ditambahkan!' })
+        e.target.reset()
+    } catch (error) {
+        console.error('Error:', error)
+        showToast('error', error.message || 'Gagal menyimpan data')
+    }
+    btn.innerHTML = orig; btn.disabled = false
+})
+
+;(async () => {
+    const user = await requireAuth('admin', '../index.html')
+    if (!user) return
+    setUserInfo(user)
+})()
+</script>
+</body>
+</html>

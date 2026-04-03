@@ -1,0 +1,325 @@
+/* ============================================================
+   GLOBAL CSS — Shared styles for Sistem Perizinan Santri
+   ============================================================ */
+
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Loading Spinner */
+.loading-spinner {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 3px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================================
+   TOAST NOTIFICATIONS
+   ============================================================ */
+.toast-notification {
+    position: fixed;
+    top: 30px;
+    right: 30px;
+    background: white;
+    padding: 20px 30px;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    z-index: 9998;
+    animation: slideInGemoy 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border-left: 6px solid;
+    max-width: 400px;
+}
+
+.toast-notification.success {
+    border-left-color: #4caf50;
+    background: linear-gradient(145deg, #ffffff, #f0fff0);
+}
+
+.toast-notification.error {
+    border-left-color: #f44336;
+    background: linear-gradient(145deg, #ffffff, #fff0f0);
+}
+
+.toast-notification.info {
+    border-left-color: #2196f3;
+    background: linear-gradient(145deg, #ffffff, #e3f2fd);
+}
+
+.toast-notification i {
+    font-size: 30px;
+}
+
+.toast-notification.success i {
+    color: #4caf50;
+    animation: bounce 2s infinite;
+}
+
+.toast-notification.error i {
+    color: #f44336;
+}
+
+.toast-notification.info i {
+    color: #2196f3;
+}
+
+.toast-notification span {
+    font-size: 15px;
+    font-weight: 500;
+    color: #333;
+}
+
+/* ============================================================
+   POPUP DIALOGS
+   ============================================================ */
+.popup-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    background: rgba(0,0,0,0.4);
+}
+
+.popup {
+    background: white;
+    padding: 35px 45px;
+    border-radius: 30px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+    text-align: center;
+    animation: gemoyPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    max-width: 450px;
+    position: relative;
+    border: 4px solid;
+}
+
+.popup.success {
+    border-color: #4caf50;
+    background: linear-gradient(145deg, #ffffff, #f0fff0);
+}
+
+.popup.error {
+    border-color: #f44336;
+    background: linear-gradient(145deg, #ffffff, #fff0f0);
+}
+
+.popup.warning {
+    border-color: #ff9800;
+    background: linear-gradient(145deg, #ffffff, #fff7e6);
+}
+
+.popup.info {
+    border-color: #2196f3;
+    background: linear-gradient(145deg, #ffffff, #e3f2fd);
+}
+
+.popup > i {
+    font-size: 80px;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2));
+    animation: bounce 2s infinite;
+}
+
+.popup.success > i { color: #4caf50; }
+.popup.error > i { color: #f44336; }
+.popup.warning > i { color: #ff9800; }
+.popup.info > i { color: #2196f3; }
+
+.popup h3 {
+    margin-bottom: 15px;
+    color: #333;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.popup p {
+    margin-bottom: 25px;
+    color: #666;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.popup-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.popup-btn {
+    padding: 12px 35px;
+    border: none;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.popup-btn.confirm {
+    background: #4caf50;
+    color: white;
+}
+
+.popup-btn.cancel {
+    background: #f44336;
+    color: white;
+}
+
+.popup-btn.ok {
+    background: #1e3c72;
+    color: white;
+    padding: 12px 50px;
+}
+
+.popup-btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+}
+
+.popup-close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #999;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s;
+}
+
+.popup-close:hover {
+    background: #f0f0f0;
+    color: #333;
+    transform: rotate(90deg);
+}
+
+/* Detail Izin in Popup */
+.detail-izin {
+    text-align: left;
+    margin-top: 10px;
+}
+
+.detail-item {
+    display: flex;
+    margin-bottom: 12px;
+    border-bottom: 1px dashed #eee;
+    padding-bottom: 8px;
+}
+
+.detail-label {
+    width: 120px;
+    font-weight: 600;
+    color: #1b5e20;
+}
+
+.detail-value {
+    flex: 1;
+    color: #333;
+}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes gemoyPop {
+    0% {
+        opacity: 0;
+        transform: scale(0.3) rotate(-10deg);
+    }
+    50% {
+        transform: scale(1.1) rotate(2deg);
+    }
+    70% {
+        transform: scale(0.95) rotate(-1deg);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) rotate(0);
+    }
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+}
+
+@keyframes slideInGemoy {
+    0% {
+        opacity: 0;
+        transform: translateX(100px) rotate(5deg);
+    }
+    70% {
+        transform: translateX(-10px) rotate(-2deg);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0) rotate(0);
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}

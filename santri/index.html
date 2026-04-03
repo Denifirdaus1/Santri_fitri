@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Santri | Pesantren</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/global.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f5f8fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* HEADER STYLES */
+        .header {
+            background: linear-gradient(135deg, #1a5e20 0%, #2e7d32 100%);
+            color: white;
+            padding: 25px 30px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(30, 94, 32, 0.15);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .header h2 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+        }
+
+        .user-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .user-details {
+            flex: 1;
+        }
+
+        .status-badge {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 14px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-logout-pill {
+            display: inline-block;
+            padding: 12px 25px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            color: white;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-logout-pill:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        /* LAYOUT */
+        .content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 992px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* CARD STYLES */
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e9ecef;
+        }
+
+        .card h3 {
+            color: #1a5e20;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e8f5e9;
+            font-size: 18px;
+        }
+
+        /* FORM STYLES */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #444;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #2e7d32;
+            box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+        }
+
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 16px;
+            padding-right: 40px;
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        /* BUTTON STYLES */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: #2e7d32;
+            color: white;
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+        }
+
+        .btn-primary:hover {
+            background: #1b5e20;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(30, 94, 32, 0.2);
+        }
+
+        .btn-kembali {
+            background: #4caf50;
+            color: white;
+            padding: 8px 16px;
+            font-size: 14px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-kembali:hover {
+            background: #388e3c;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(76, 175, 80, 0.3);
+        }
+
+        .btn-disabled {
+            background: #e0e0e0;
+            color: #9e9e9e;
+            cursor: not-allowed;
+        }
+
+        .btn-disabled:hover {
+            background: #e0e0e0;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* TABLE STYLES */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .table th {
+            background: #f8f9fa;
+            color: #1a5e20;
+            font-weight: 600;
+            padding: 14px 12px;
+            text-align: left;
+            border-bottom: 2px solid #e9ecef;
+            font-size: 14px;
+        }
+
+        .table td {
+            padding: 12px;
+            border-bottom: 1px solid #e9ecef;
+            vertical-align: middle;
+        }
+
+        .table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* BADGE STYLES */
+        .badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .badge-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .badge-approve {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-reject {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .badge-tepat {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-telat {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .badge-belum {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        /* NOTIFICATION */
+        .notification {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border: 1px solid #c3e6cb;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        .notification::before {
+            content: "✓";
+            font-weight: bold;
+        }
+
+        /* LIST STYLES */
+        .rules-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .rules-list li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .rules-list li::before {
+            content: "•";
+            color: #2e7d32;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        /* MESSAGE BOX */
+        .message-box {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-style: italic;
+            border-left: 4px solid #2196f3;
+        }
+
+        /* POPUP GEMES */
+        .popup-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        .popup {
+            background: white;
+            padding: 30px 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            text-align: center;
+            animation: popIn 0.5s ease-out;
+            pointer-events: all;
+            max-width: 400px;
+            position: relative;
+            border-top: 5px solid;
+        }
+
+        .popup.success {
+            border-top-color: #4caf50;
+        }
+
+        .popup.error {
+            border-top-color: #f44336;
+        }
+
+        .popup.warning {
+            border-top-color: #ff9800;
+        }
+
+        .popup i {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+
+        .popup.success i {
+            color: #4caf50;
+        }
+
+        .popup.error i {
+            color: #f44336;
+        }
+
+        .popup.warning i {
+            color: #ff9800;
+        }
+
+        .popup h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .popup p {
+            margin-bottom: 20px;
+            color: #666;
+        }
+
+        .popup-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .popup-btn {
+            padding: 10px 30px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .popup-btn.confirm {
+            background: #4caf50;
+            color: white;
+        }
+
+        .popup-btn.cancel {
+            background: #f44336;
+            color: white;
+        }
+
+        .popup-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+        }
+
+        .popup-close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 20px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .popup-close:hover {
+            color: #333;
+        }
+
+        @keyframes popIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            70% {
+                transform: scale(1.1);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* TOAST NOTIFICATION */
+        .toast-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 9998;
+            animation: slideInRight 0.5s ease-out;
+            border-left: 4px solid;
+        }
+
+        .toast-notification.success {
+            border-left-color: #4caf50;
+        }
+
+        .toast-notification.error {
+            border-left-color: #f44336;
+        }
+
+        .toast-notification.info {
+            border-left-color: #2196f3;
+        }
+
+        .toast-notification i {
+            font-size: 24px;
+        }
+
+        .toast-notification.success i {
+            color: #4caf50;
+        }
+
+        .toast-notification.error i {
+            color: #f44336;
+        }
+
+        .toast-notification.info i {
+            color: #2196f3;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0,0,0,0.1);
+            border-radius: 50%;
+            border-top-color: #1a5e20;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* FOOTER */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 14px;
+            margin-top: 30px;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .text-muted {
+            color: #666;
+            font-size: 13px;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-3 {
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+<!-- NOTIFICATION AREA -->
+<div id="notification"></div>
+
+<!-- HEADER -->
+<div class="header">
+    <h1>Tanwirul Qulub Boka</h1>
+    <div class="subtitle">Sistem Informasi Pesantren</div>
+    
+    <div class="user-info">
+        <div class="user-details">
+            <h2 id="userName">Loading...</h2>
+            <div class="subtitle">STATUS SAAT INI</div>
+        </div>
+        <div class="status-badge" id="statusBadge">Di Pondok (Active)</div>
+        <a href="#" class="btn-logout-pill" onclick="showLogoutPopup()">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </a>
+    </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="content">
+
+<!-- LEFT COLUMN -->
+<div>
+
+<!-- FORM PERIZINAN -->
+<div class="card">
+    <h3>Formulir Perizinan</h3>
+    
+    <form id="izinForm">
+        <div class="form-group">
+            <label for="jenis_izin">Jenis Izin</label>
+            <select name="jenis_izin" id="jenis_izin" class="form-control" required>
+                <option value="">Pilih jenis izin...</option>
+                <option value="pulang">Pulang</option>
+                <option value="keluar">Keluar</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="tanggal_keluar">Tanggal Keluar</label>
+            <input type="date" name="tanggal_keluar" id="tanggal_keluar" class="form-control" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="alasan">Keterangan / Alasan</label>
+            <textarea name="alasan" id="alasan" class="form-control" placeholder="Jelaskan alasan izin secara detail..." required></textarea>
+        </div>
+        
+        <button type="submit" class="btn btn-primary" id="submitIzin">
+            <i class="fa-solid fa-paper-plane"></i> Ajukan Permohonan Izin
+        </button>
+    </form>
+</div>
+
+</div>
+
+<!-- RIGHT COLUMN -->
+<div>
+
+<!-- TATA TERTIB -->
+<div class="card">
+    <h3>Tata Tertib Perizinan</h3>
+    <ul class="rules-list">
+        <li>Izin sakit lebih dari 2 hari wajib menyertakan Surat Keterangan Dokter.</li>
+        <li>Izin pulang acara keluarga maksimal 3 hari.</li>
+        <li>Santri wajib lapor ke Kantor Pengasuhan saat kembali ke pondok.</li>
+        <li>Permohonan izin diajukan minimal H-3 sebelum tanggal kepulangan.</li>
+        <li>Klik tombol "Saya Sudah Kembali" setelah sampai pondok.</li>
+    </ul>
+    
+    <div class="message-box mt-3">
+        "Disiplin adalah kunci kesuksesan seorang santri."
+    </div>
+</div>
+
+<!-- BANTUAN -->
+<div class="card">
+    <h3>Butuh Bantuan?</h3>
+    <p class="mb-3">Hubungi pengurus jika ada kendala.</p>
+    <button class="btn btn-primary" onclick="showToast('info', 'Hubungi admin di 0898-0933-733')">
+        <i class="fa-solid fa-headset"></i> Hubungi Admin
+    </button>
+</div>
+
+</div>
+</div>
+
+<!-- RIWAYAT PERIZINAN -->
+<div class="card">
+    <h3>Riwayat Perizinan Terakhir</h3>
+    
+    <div class="table-container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>TANGGAL PENGAJUAN</th>
+                    <th>JENIS IZIN</th>
+                    <th>DURASI</th>
+                    <th>KETERANGAN</th>
+                    <th>STATUS</th>
+                    <th>STATUS KEMBALI</th>
+                    <th>AKSI</th>
+                </tr>
+            </thead>
+            <tbody id="riwayatBody">
+                <tr>
+                    <td colspan="7" class="text-center">
+                        <i class="fa-solid fa-spinner fa-spin"></i> Memuat riwayat...
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+    © 2026 Ponpes Tanwirul Qulub. All rights reserved.
+</div>
+
+</div>
+
+<!-- POPUP CONTAINER -->
+<div id="popupContainer" class="popup-container" style="display: none;"></div>
+
+<script type="module">
+import { supabase } from '../js/supabase-client.js'
+import { requireAuth, getUserName, getSantriId, logout as authLogout } from '../js/auth.js'
+import { showToast, showPopup, closePopup, formatDate, formatDateTime, setUserInfo } from '../js/utils.js'
+
+// ==================== GLOBAL VARIABLES ====================
+let currentUser = null
+let myIdSantri = null
+
+// Make functions available globally for onclick handlers
+window.konfirmasiKembali = konfirmasiKembali
+window.showLogoutPopup = showLogoutPopup
+
+// ==================== SET MIN DATE ====================
+function setMinDate() {
+    const today = new Date().toISOString().split('T')[0];
+    const dateInput = document.getElementById('tanggal_keluar');
+    dateInput.min = today;
+    dateInput.value = today;
+}
+
+// ==================== POPUP FUNCTIONS ====================
+function showPopup(options) {
+    const container = document.getElementById('popupContainer');
+    
+    let icon = '';
+    let bgClass = '';
+    
+    if (options.type === 'success') {
+        icon = 'fa-circle-check';
+        bgClass = 'success';
+    } else if (options.type === 'error') {
+        icon = 'fa-circle-exclamation';
+        bgClass = 'error';
+    } else if (options.type === 'warning') {
+        icon = 'fa-triangle-exclamation';
+        bgClass = 'warning';
+    } else if (options.type === 'confirm') {
+        icon = 'fa-circle-question';
+        bgClass = 'warning';
+    }
+    
+    let buttons = '';
+    if (options.type === 'confirm') {
+        buttons = `
+            <div class="popup-buttons">
+                <button class="popup-btn cancel" onclick="closePopup()">Batal</button>
+                <button class="popup-btn confirm" onclick="${options.onConfirm}">Ya, ${options.confirmText || 'Lanjutkan'}</button>
+            </div>
+        `;
+    } else {
+        buttons = `
+            <div class="popup-buttons">
+                <button class="popup-btn confirm" onclick="closePopup()">OK</button>
+            </div>
+        `;
+    }
+    
+    container.innerHTML = `
+        <div class="popup ${bgClass}">
+            <span class="popup-close" onclick="closePopup()">&times;</span>
+            <i class="fa-solid ${icon}"></i>
+            <h3>${options.title || ''}</h3>
+            <p>${options.message || ''}</p>
+            ${buttons}
+        </div>
+    `;
+    
+    container.style.display = 'flex';
+    
+    if (options.type !== 'confirm') {
+        setTimeout(closePopup, 3000);
+    }
+}
+
+function closePopup() {
+    document.getElementById('popupContainer').style.display = 'none';
+}
+
+// ==================== TOAST NOTIFICATION ====================
+function showToast(type, message) {
+    const toast = document.createElement('div');
+    toast.className = `toast-notification ${type}`;
+    
+    let icon = type === 'success' ? 'fa-circle-check' : 
+                type === 'error' ? 'fa-circle-exclamation' : 'fa-circle-info';
+    
+    toast.innerHTML = `<i class="fa-solid ${icon}"></i><span>${message}</span>`;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.style.transition = 'opacity 0.5s';
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 500);
+    }, 3000);
+}
+
+// ==================== LOGOUT ====================
+function showLogoutPopup() {
+    showPopup({
+        type: 'confirm',
+        title: 'Yakin mau logout? 🥺',
+        message: 'Kamu akan kembali ke halaman login',
+        confirmText: 'Logout',
+        onConfirmFn: async () => {
+            closePopup()
+            showToast('info', 'Logout...')
+            await authLogout()
+            setTimeout(() => {
+                window.location.href = '../index.html?logout=success'
+            }, 1000)
+        }
+    })
+}
+
+// ==================== FORMAT DATE ====================
+function formatDate(dateString) {
+    const d = new Date(dateString);
+    return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+function formatDateTime(dateString) {
+    if (!dateString) return '-';
+    const d = new Date(dateString);
+    return d.toLocaleString('id-ID', { 
+        day: '2-digit', month: '2-digit', year: 'numeric',
+        hour: '2-digit', minute: '2-digit' 
+    });
+}
+
+// ==================== LOAD RIWAYAT ====================
+async function loadRiwayat() {
+    try {
+        const { data, error } = await supabase
+            .from('izin')
+            .select('*')
+            .eq('id_santri', myIdSantri)
+            .order('created_at', { ascending: false })
+            .limit(5)
+
+        if (error) throw error
+        
+        const tbody = document.getElementById('riwayatBody');
+        
+        if (data && data.length > 0) {
+            let html = '';
+            
+            for (let item of data) {
+                
+                const tgl = formatDate(item.tanggal_keluar);
+                
+                let statusBadge = '';
+                if (item.status === 'menunggu') {
+                    statusBadge = '<span class="badge badge-pending">Pending</span>';
+                } else if (item.status === 'disetujui') {
+                    statusBadge = '<span class="badge badge-approve">Disetujui</span>';
+                } else {
+                    statusBadge = '<span class="badge badge-reject">Ditolak</span>';
+                }
+                
+                let kembaliBadge = '';
+                let showKembaliButton = false;
+                
+                if (!item.tanggal_kembali) {
+                    if (item.status === 'disetujui') {
+                        if (item.batas_waktu) {
+                            const batas = new Date(item.batas_waktu).getTime();
+                            const sekarang = new Date().getTime();
+                            if (sekarang > batas) {
+                                kembaliBadge = '<span class="badge badge-telat">Terlambat</span>';
+                            } else {
+                                kembaliBadge = '<span class="badge badge-belum">Belum Kembali</span>';
+                                showKembaliButton = true;
+                            }
+                        } else {
+                            kembaliBadge = '<span class="badge badge-belum">Belum Kembali</span>';
+                            showKembaliButton = true;
+                        }
+                    } else {
+                        kembaliBadge = '-';
+                    }
+                } else {
+                    const tglKembali = formatDateTime(item.tanggal_kembali);
+                    if (item.status_kembali === 'tepat_waktu') {
+                        kembaliBadge = `<span class="badge badge-tepat">Tepat Waktu</span><br><small class="text-muted">${tglKembali}</small>`;
+                    } else {
+                        kembaliBadge = `<span class="badge badge-telat">Terlambat</span><br><small class="text-muted">${tglKembali}</small>`;
+                    }
+                }
+                
+                let durasi = '-';
+                if (item.batas_waktu) {
+                    const tglKeluar = new Date(item.tanggal_keluar).getTime();
+                    const batas = new Date(item.batas_waktu).getTime();
+                    const selisih = Math.ceil((batas - tglKeluar) / (1000 * 60 * 60 * 24));
+                    durasi = selisih + ' Hari';
+                }
+                
+                const showKembaliButtonFinal = (item.status === 'disetujui' && !item.tanggal_kembali);
+                
+                html += `
+                    <tr>
+                        <td>${tgl}</td>
+                        <td>${item.jenis_izin.charAt(0).toUpperCase() + item.jenis_izin.slice(1)}</td>
+                        <td>${durasi}</td>
+                        <td>${item.alasan.substring(0, 50)}${item.alasan.length > 50 ? '...' : ''}</td>
+                        <td>${statusBadge}</td>
+                        <td>${kembaliBadge}</td>
+                        <td>
+                            ${showKembaliButtonFinal ? 
+                                `<button class="btn btn-kembali" onclick="konfirmasiKembali(${item.id_izin})">
+                                    Saya Sudah Kembali
+                                </button>` :
+                                `<button class="btn btn-kembali btn-disabled" disabled>Detail</button>`
+                            }
+                        </td>
+                    </tr>
+                `;
+            }
+            
+            tbody.innerHTML = html;
+        } else {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="text-center">Belum ada riwayat perizinan</td>
+                </tr>
+            `;
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        document.getElementById('riwayatBody').innerHTML = `
+            <tr>
+                <td colspan="7" class="text-center">Gagal memuat riwayat</td>
+            </tr>
+        `;
+    }
+}
+
+// ==================== AJUKAN IZIN ====================
+document.getElementById('izinForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const jenisIzin = document.getElementById('jenis_izin').value;
+    const tanggalKeluar = document.getElementById('tanggal_keluar').value;
+    const alasan = document.getElementById('alasan').value;
+    
+    if (!jenisIzin || !tanggalKeluar || !alasan) {
+        showToast('error', 'Semua field harus diisi!');
+        return;
+    }
+    
+    const submitBtn = document.getElementById('submitIzin');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengirim...';
+    submitBtn.disabled = true;
+    
+    try {
+        const { error } = await supabase
+            .from('izin')
+            .insert({
+                id_santri: myIdSantri,
+                jenis_izin: jenisIzin,
+                tanggal_keluar: tanggalKeluar,
+                alasan: alasan
+            })
+
+        if (error) throw error
+        
+        showPopup({
+            type: 'success',
+            title: 'Berhasil! 🎉',
+            message: 'Permohonan izin berhasil diajukan!'
+        });
+        
+        document.getElementById('izinForm').reset();
+        setMinDate();
+        loadRiwayat();
+    } catch (error) {
+        console.error('Error:', error);
+        showToast('error', error.message || 'Gagal mengirim data');
+    }
+    
+    submitBtn.innerHTML = originalText;
+    submitBtn.disabled = false;
+});
+
+// ==================== KONFIRMASI KEMBALI ====================
+function konfirmasiKembali(id) {
+    showPopup({
+        type: 'confirm',
+        title: 'Sudah Kembali? 🏠',
+        message: 'Konfirmasi bahwa kamu sudah kembali ke pondok?',
+        confirmText: 'Ya, sudah kembali',
+        onConfirmFn: () => prosesKembali(id)
+    })
+}
+
+async function prosesKembali(id) {
+    closePopup()
+    showToast('info', 'Memproses...')
+    
+    try {
+        // Cek apakah sudah melewati batas waktu
+        const { data: izinData } = await supabase
+            .from('izin')
+            .select('batas_waktu')
+            .eq('id_izin', id)
+            .single()
+
+        let statusKembali = 'tepat_waktu'
+        if (izinData?.batas_waktu) {
+            const batas = new Date(izinData.batas_waktu).getTime()
+            const sekarang = new Date().getTime()
+            if (sekarang > batas) {
+                statusKembali = 'terlambat'
+            }
+        }
+
+        const { error } = await supabase
+            .from('izin')
+            .update({
+                tanggal_kembali: new Date().toISOString(),
+                status_kembali: statusKembali
+            })
+            .eq('id_izin', id)
+
+        if (error) throw error
+        
+        showPopup({
+            type: 'success',
+            title: 'Berhasil! 🎉',
+            message: 'Konfirmasi kembali berhasil!'
+        })
+        loadRiwayat()
+    } catch (error) {
+        console.error('Error:', error)
+        showToast('error', error.message || 'Gagal konfirmasi')
+    }
+}
+
+// ==================== INIT ====================
+;(async () => {
+    currentUser = await requireAuth('santri', '../index.html')
+    if (!currentUser) return
+    
+    myIdSantri = getSantriId(currentUser)
+    document.getElementById('userName').innerText = getUserName(currentUser)
+    setMinDate()
+    loadRiwayat()
+})()
+</script>
+
+</body>
+</html>
