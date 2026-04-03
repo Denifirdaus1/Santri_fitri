@@ -1109,14 +1109,15 @@
                             <th>NIS</th>
                             <th>Nama Santri</th>
                             <th>Kelas</th>
-                            <th>Tanggal</th>
+                            <th>Jenis Izin</th>
+                            <th>Jadwal Izin</th>
                             <th>Status Perizinan</th>
                             <th>Keterangan</th>
                         </tr>
                     </thead>
                     <tbody id="rekapBody">
                         <tr>
-                            <td colspan="7" style="text-align: center; padding: 40px;">
+                            <td colspan="8" style="text-align: center; padding: 40px;">
                                 <i class="fa-solid fa-spinner fa-spin" style="font-size: 48px; color: #1b5e20;"></i>
                                 <br>
                                 Memuat data...
@@ -1133,10 +1134,10 @@
                 </div>
                 
                 <div class="pagination" id="paginationButtons">
-                    <button class="page-btn" onclick="previousPage()" id="prevBtn">
+                    <button class="page-btn" onclick="prevPage()" id="prevBtn">
                         <i class="fa-solid fa-chevron-left"></i>
                     </button>
-                    <span id="pageNumbers"></span>
+                    <span id="pageNumbers" style="display:flex;gap:4px;"></span>
                     <button class="page-btn" onclick="nextPage()" id="nextBtn">
                         <i class="fa-solid fa-chevron-right"></i>
                     </button>
@@ -1159,19 +1160,21 @@
 <script type="module">
 import { supabase } from '../js/supabase-client.js'
 import { requireAuth, logout as authLogout } from '../js/auth.js'
-import { showToast, showPopup, closePopup, setUserInfo } from '../js/utils.js'
+import { showToast, showPopup, closePopup, setUserInfo, formatDateTime } from '../js/utils.js'
 
 let rekapData = [], filteredData = [], currentPage = 1
+let totalSemuaSantri = 0;
 const rowsPerPage = 10
 
 window.showLogoutPopup = showLogoutPopup
-window.applyFilters = applyFilters
-window.resetFilters = resetFilters
+window.terapkanFilter = applyFilters
+window.resetFilter = resetFilters
 window.prevPage = prevPage
 window.nextPage = nextPage
 window.goToPage = goToPage
 window.exportExcel = exportExcel
 window.exportPDF = exportPDF
+window.cetakRekap = exportPDF
 
 function showLogoutPopup() {
     showPopup({ type: 'confirm', title: 'Yakin mau logout? 🥺', message: 'Kamu akan kembali ke halaman login', confirmText: 'Logout',
@@ -1179,59 +1182,146 @@ function showLogoutPopup() {
     })
 }
 
-async function loadRekap() {
+async function loadData() {
     try {
-        const { data, error } = await supabase.from('izin').select('*, santri(nama_santri, kelas, nis)').order('created_at', { ascending: false })
-        if (error) throw error
-        rekapData = (data || []).map(item => ({
+        const { data: izinData, error: izinErr } = await supabase.from('izin').select('*, santri(nama_santri, kelas, nis)').order('created_at', { ascending: false })
+        if (izinErr) throw izinErr
+        
+        const { count: countSantri, error: cErr } = await supabase.from('santri').select('*', { count: 'exact', head: true }).eq('status', 'aktif')
+        if (!cErr && countSantri !== null) { totalSemuaSantri = countSantri; }
+
+        rekapData = (izinData || []).map(item => ({
             ...item,
             nama_santri: item.santri?.nama_santri || '-',
             kelas: item.santri?.kelas || '-',
             nis: item.santri?.nis || '-'
         }))
         filteredData = [...rekapData]
-        renderTable(); updatePagination()
-    } catch (e) { console.error(e); showToast('error', 'Gagal memuat data') }
+        
+        calculateStats()
+        renderTable()
+        updatePagination()
+    } catch (e) {
+        console.error(e)
+        showToast('error', 'Gagal memuat data')
+        document.getElementById('rekapBody').innerHTML = '<tr><td colspan="8">Gagal memuat data.</td></tr>'
+    }
+}
+
+function calculateStats() {
+    let tSakit = 0, tIzin = 0, tAlpha = 0;
+    
+    filteredData.forEach(item => {
+        if(item.jenis_izin === 'sakit') tSakit++;
+        else if(['acara_keluarga', 'pulang', 'keluar', 'lainnya'].includes(item.jenis_izin)) tIzin++;
+        else tAlpha++;
+    })
+    
+    document.getElementById('totalSakit').innerText = tSakit
+    document.getElementById('totalIzin').innerText = tIzin
+    document.getElementById('totalAlpha').innerText = tAlpha
+    
+    document.getElementById('totalSantri').innerText = totalSemuaSantri
+    
+    let totalIzinSakit = tSakit + tIzin
+    document.getElementById('totalIzinSakit').innerText = totalIzinSakit
+    
+    let p = 100;
+    if(totalSemuaSantri > 0) {
+        p = ((totalSemuaSantri - totalIzinSakit - tAlpha) / totalSemuaSantri) * 100
+        if(p < 0) p = 0;
+    }
+    document.getElementById('persenHadir').innerText = p.toFixed(1) + '%'
 }
 
 function renderTable() {
     const tbody = document.getElementById('rekapBody')
     if (!tbody) return
-    if (filteredData.length === 0) { tbody.innerHTML = '<tr><td colspan="8" class="empty-state"><h4>Tidak ada data</h4></td></tr>'; return }
+    if (filteredData.length === 0) { tbody.innerHTML = '<tr><td colspan="8" class="empty-state" style="text-align:center;padding:30px">Tidak ada data</td></tr>'; return }
     const start = (currentPage-1)*rowsPerPage
     let html = ''
     filteredData.slice(start, start+rowsPerPage).forEach((item, i) => {
         let statusBadge = ''
-        if (item.status === 'menunggu') statusBadge = '<span class="status-badge status-belum">Menunggu</span>'
-        else if (item.status === 'disetujui') statusBadge = '<span class="status-badge status-tepat">Disetujui</span>'
-        else statusBadge = '<span class="status-badge status-terlambat">Ditolak</span>'
-        html += `<tr><td>${start+i+1}</td><td><strong>${item.nama_santri}</strong></td><td>${item.kelas}</td><td>${item.jenis_izin || '-'}</td>
-        <td>${item.tanggal_keluar ? new Date(item.tanggal_keluar).toLocaleDateString('id-ID') : '-'}</td>
-        <td>${item.batas_waktu ? new Date(item.batas_waktu).toLocaleDateString('id-ID') : '-'}</td>
-        <td>${statusBadge}</td><td>${item.alasan || '-'}</td></tr>`
+        if (item.status === 'menunggu') statusBadge = '<span class="status-badge status-belum" style="background:#fff3e0;color:#ef6c00;">Menunggu</span>'
+        else if (item.status === 'disetujui') statusBadge = '<span class="status-badge status-tepat" style="background:#e8f5e9;color:#2e7d32;">Disetujui</span>'
+        else statusBadge = '<span class="status-badge status-terlambat" style="background:#ffebee;color:#c62828;">Ditolak</span>'
+        
+        let jadwalStr = item.tanggal_keluar ? formatDateTime(item.tanggal_keluar) : '-';
+        if(item.batas_waktu) jadwalStr += ' s/d ' + formatDateTime(item.batas_waktu);
+        
+        let jenisBadge = item.jenis_izin === 'sakit' ? '<span class="status-badge status-sakit">Sakit</span>' : '<span class="status-badge status-izin">' + (item.jenis_izin || '-') + '</span>';
+
+        html += `<tr>
+            <td>${start+i+1}</td>
+            <td><strong>${item.nis}</strong></td>
+            <td>${item.nama_santri}</td>
+            <td>${item.kelas}</td>
+            <td>${jenisBadge}</td>
+            <td>${jadwalStr}</td>
+            <td>${statusBadge}</td>
+            <td>${item.alasan || '-'}</td>
+        </tr>`
     })
     tbody.innerHTML = html
 }
 
 function applyFilters() {
-    const kf = document.getElementById('filterKelas')?.value, sf = document.getElementById('filterStatus')?.value
-    filteredData = rekapData.filter(i => (!kf || i.kelas === kf) && (!sf || i.status === sf))
-    currentPage = 1; renderTable(); updatePagination()
+    const kf = document.getElementById('kelasFilter')?.value
+    const sf = document.getElementById('statusFilter')?.value.toLowerCase()
+    const tStart = document.getElementById('tanggalMulai')?.value
+    const tEnd = document.getElementById('tanggalSelesai')?.value
+    
+    filteredData = rekapData.filter(i => {
+        let matchClass = !kf || i.kelas === kf;
+        let matchStatus = true;
+        if (sf === 'sakit') matchStatus = i.jenis_izin === 'sakit';
+        else if (sf === 'izin') matchStatus = ['acara_keluarga', 'pulang', 'keluar', 'lainnya'].includes(i.jenis_izin);
+        
+        let matchDate = true;
+        if(tStart && i.tanggal_keluar) matchDate = matchDate && (new Date(i.tanggal_keluar) >= new Date(tStart));
+        if(tEnd && i.tanggal_keluar) matchDate = matchDate && (new Date(i.tanggal_keluar) <= new Date(tEnd + 'T23:59:59'));
+        
+        return matchClass && matchStatus && matchDate;
+    })
+    currentPage = 1; 
+    calculateStats();
+    renderTable(); 
+    updatePagination();
 }
+
 function resetFilters() {
-    if(document.getElementById('filterKelas')) document.getElementById('filterKelas').value = ''
-    if(document.getElementById('filterStatus')) document.getElementById('filterStatus').value = ''
-    filteredData = [...rekapData]; currentPage = 1; renderTable(); updatePagination()
+    if(document.getElementById('kelasFilter')) document.getElementById('kelasFilter').value = ''
+    if(document.getElementById('statusFilter')) document.getElementById('statusFilter').value = ''
+    if(document.getElementById('tanggalMulai')) document.getElementById('tanggalMulai').value = ''
+    if(document.getElementById('tanggalSelesai')) document.getElementById('tanggalSelesai').value = ''
+    
+    filteredData = [...rekapData]; 
+    currentPage = 1; 
+    calculateStats();
+    renderTable(); 
+    updatePagination();
 }
 
 function updatePagination() {
     const tp = Math.ceil(filteredData.length/rowsPerPage)
     if (document.getElementById('paginationInfo')) {
-        const s = (currentPage-1)*rowsPerPage+1, e = Math.min(currentPage*rowsPerPage, filteredData.length)
+        const s = filteredData.length > 0 ? (currentPage-1)*rowsPerPage+1 : 0
+        const e = Math.min(currentPage*rowsPerPage, filteredData.length)
         document.getElementById('paginationInfo').innerHTML = filteredData.length === 0 ? '<i class="fa-solid fa-database"></i> Tidak ada data' : `<i class="fa-solid fa-database"></i> ${s}-${e} dari ${filteredData.length}`
     }
     if(document.getElementById('prevBtn')) document.getElementById('prevBtn').disabled = currentPage<=1
     if(document.getElementById('nextBtn')) document.getElementById('nextBtn').disabled = currentPage>=tp
+    
+    let pnHTML = '';
+    for(let i=1; i<=tp; i++) {
+        if(i === 1 || i === tp || (i >= currentPage-1 && i <= currentPage+1)) {
+            pnHTML += `<button class="page-btn ${i===currentPage?'active':''}" onclick="goToPage(${i})">${i}</button>`;
+        } else if(i === currentPage-2 || i === currentPage+2) {
+             pnHTML += `<button class="page-btn" disabled>...</button>`;
+        }
+    }
+    const pnContainer = document.getElementById('pageNumbers');
+    if(pnContainer) pnContainer.innerHTML = pnHTML;
 }
 
 function prevPage() { if (currentPage > 1) { currentPage--; renderTable(); updatePagination() } }
@@ -1239,31 +1329,84 @@ function nextPage() { if (currentPage < Math.ceil(filteredData.length/rowsPerPag
 function goToPage(p) { currentPage = p; renderTable(); updatePagination() }
 
 async function exportExcel() {
-    showToast('info', 'Menyiapkan export...')
+    if (filteredData.length === 0) { showToast('error', 'Tidak ada data untuk diekspor'); return; }
+    showToast('info', 'Menyiapkan export Excel...')
     try {
-        const { data, error } = await supabase.functions.invoke('export-data', {
-            body: { table: 'izin', format: 'csv' }
+        const ws_data = [['NO', 'NIS', 'Nama Santri', 'Kelas', 'Jenis Izin', 'Waktu Keluar', 'Batas Waktu', 'Status', 'Alasan']];
+        filteredData.forEach((s, i) => {
+            ws_data.push([
+                i + 1,
+                s.nis,
+                s.nama_santri,
+                s.kelas,
+                s.jenis_izin,
+                s.tanggal_keluar ? formatDateTime(s.tanggal_keluar) : '',
+                s.batas_waktu ? formatDateTime(s.batas_waktu) : '',
+                s.status,
+                s.alasan
+            ])
         })
-        if (error) throw error
-        
-        // Prepare CSV download
-        const blob = new Blob([data], { type: 'text/csv;charset=utf-8;' })
-        const url = URL.createObjectURL(blob)
-        const a = document.createElement('a')
-        a.href = url
-        a.download = 'Rekap_Perizinan.csv'
-        a.click()
-        showToast('success', 'Excel berhasil didownload 📊')
+        const ws = XLSX.utils.aoa_to_sheet(ws_data);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Rekap Perizinan");
+        XLSX.writeFile(wb, "Rekap_Perizinan.xlsx");
+        showToast('success', 'Excel berhasil diekspor 📊')
     } catch (e) {
         console.error(e)
-        showToast('error', 'Gagal export data: ' + e.message)
+        showToast('error', 'Gagal export data Excel.')
     }
 }
-function exportPDF() { showToast('info', 'Export PDF...') }
+
+function exportPDF() { 
+    if (filteredData.length === 0) { showToast('error', 'Tidak ada data untuk diekspor'); return; }
+    showToast('info', 'Menyiapkan PDF...')
+    try {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('landscape');
+        
+        doc.setFontSize(18);
+        doc.setTextColor(27, 94, 32);
+        doc.text("Laporan Rekapitulasi Perizinan - Tanwirul Qulub", 14, 22);
+        
+        const tableColumn = ["No", "NIS", "Nama", "Kelas", "Izin", "Keluar", "Kembali", "Status", "Alasan"];
+        const tableRows = [];
+        
+        filteredData.forEach((s, i) => {
+            tableRows.push([
+                i + 1,
+                s.nis,
+                s.nama_santri,
+                s.kelas,
+                s.jenis_izin,
+                s.tanggal_keluar ? formatDateTime(s.tanggal_keluar) : '-',
+                s.batas_waktu ? formatDateTime(s.batas_waktu) : '-',
+                s.status,
+                s.alasan ? (s.alasan.length > 20 ? s.alasan.substring(0, 20) + '...' : s.alasan) : '-'
+            ]);
+        });
+        
+        doc.autoTable({
+            head: [tableColumn],
+            body: tableRows,
+            startY: 35,
+            theme: 'grid',
+            headStyles: { fillColor: [27, 94, 32], textColor: 255 },
+            styles: { fontSize: 9 }
+        });
+        
+        doc.save("Rekap_Perizinan.pdf");
+        showToast('success', 'PDF siap dan berhasil diunduh 📄');
+    } catch (e) {
+        console.error(e);
+        showToast('error', 'Gagal membuat file PDF');
+    }
+}
 
 ;(async () => {
     const user = await requireAuth('admin', '/')
-    if (!user) return; setUserInfo(user); loadRekap()
+    if (!user) return; 
+    setUserInfo(user); 
+    loadData();
 })()
 </script>
 
